@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heritage Resources</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f4f1ed;
+            color: #5f5a55;
+        }
+
+        .page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px 60px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 34px;
+            color: #6f7c75;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8a8178;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .control-panel {
+            background-color: #e9e3dc;
+            border: 1px solid #d6cdc3;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 8px 20px rgba(120, 110, 100, 0.12);
+            margin-bottom: 28px;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+        }
+
+        input, select {
+            padding: 10px 12px;
+            border: 1px solid #cfc5ba;
+            border-radius: 10px;
+            background-color: #f8f5f1;
+            color: #5f5a55;
+            font-size: 14px;
+            min-width: 180px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #a8b7ab;
+            box-shadow: 0 0 0 3px rgba(168, 183, 171, 0.18);
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        #loadAllBtn {
+            background-color: #c7b8a3;
+            color: white;
+        }
+
+        #loadAllBtn:hover {
+            background-color: #b9a891;
+        }
+
+        #searchAllBtn {
+            background-color: #a8b7ab;
+            color: white;
+        }
+
+        #searchAllBtn:hover {
+            background-color: #94a398;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: #7c8b84;
+            margin-bottom: 18px;
+        }
+
+        #resourceList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .resource-card {
+            background-color: #ece6df;
+            border: 1px solid #d9d0c7;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 6px 16px rgba(120, 110, 100, 0.10);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 22px rgba(120, 110, 100, 0.14);
+        }
+
+        .resource-title {
+            font-weight: 700;
+            font-size: 19px;
+            color: #6b746f;
+            margin-bottom: 12px;
+        }
+
+        .resource-card p {
+            margin: 8px 0;
+            line-height: 1.5;
+            color: #5f5a55;
+        }
+
+        .resource-card strong {
+            color: #7c8b84;
+        }
+
+        .detail-btn {
+            margin-top: 12px;
+            background-color: #b7a7ad;
+            color: white;
+        }
+
+        .detail-btn:hover {
+            background-color: #a59198;
+        }
+
+        .empty-message {
+            background-color: #ece6df;
+            border: 1px solid #d9d0c7;
+            border-radius: 14px;
+            padding: 18px;
+            color: #7a726b;
+        }
+
+        @media (max-width: 700px) {
+            .control-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            input, select, button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <h1>Heritage Resource Viewer</h1>
+    <div class="subtitle">Browse, search and explore approved heritage resources</div>
+
+    <div class="control-panel">
+        <div class="control-row">
+            <input type="text" id="keyword" placeholder="Enter keyword">
+
+            <select id="categoryId">
+                <option value="">Select category</option>
+                <option value="1">Category 1</option>
+                <option value="2">Category 2</option>
+                <option value="3">Category 3</option>
+            </select>
+
+            <select id="sortBy">
+                <option value="">Select sorting</option>
+                <option value="time">Sort by Time</option>
+                <option value="title">Sort by Title</option>
+            </select>
+
+            <button id="loadAllBtn">Load All</button>
+            <button id="searchAllBtn">Search</button>
+        </div>
+    </div>
+
+    <div class="section-title">Resources</div>
+    <div id="resourceList"></div>
+</div>
+
+<script>
+    function renderResources(resources) {
+        $("#resourceList").empty();
+
+        if (resources.length === 0) {
+            $("#resourceList").html('<div class="empty-message">No matched resources.</div>');
+            return;
+        }
+
+        $.each(resources, function(index, resource) {
+            let card = `
+                <div class="resource-card">
+                    <div class="resource-title">${resource.title}</div>
+                    <p><strong>ID:</strong> ${resource.id}</p>
+                    <p><strong>Description:</strong> ${resource.description}</p>
+                    <p><strong>Category ID:</strong> ${resource.categoryId}</p>
+                    <p><strong>Status:</strong> ${resource.status}</p>
+                    <button class="detail-btn" onclick="goToDetail(${resource.id})">View Detail</button>
+                </div>
+            `;
+            $("#resourceList").append(card);
+        });
+    }
+
+    function loadAllResources() {
+        $.ajax({
+            url: "/resources",
+            type: "GET",
+            success: function(data) {
+                renderResources(data);
+            },
+            error: function() {
+                alert("Failed to load resources.");
+            }
+        });
+    }
+
+    function goToDetail(id) {
+        window.location.href = "/page/resources/" + id;
+    }
+
+    $("#loadAllBtn").click(function() {
+        loadAllResources();
+    });
+
+    $("#searchAllBtn").click(function() {
+        let keyword = $("#keyword").val().trim();
+        let categoryId = $("#categoryId").val();
+        let sortBy = $("#sortBy").val();
+
+        $.ajax({
+            url: "/resources/query",
+            type: "GET",
+            data: {
+                keyword: keyword,
+                categoryId: categoryId,
+                sortBy: sortBy
+            },
+            success: function(data) {
+                renderResources(data);
+            },
+            error: function() {
+                alert("Search failed.");
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        loadAllResources();
+    });
+</script>
+
+</body>
+</html>

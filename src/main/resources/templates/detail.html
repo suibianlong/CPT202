@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Detail</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #f4f1ed;
+            color: #5f5a55;
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #6f7c75;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        .detail-box, .comment-box {
+            background-color: #e9e3dc;
+            border: 1px solid #d6cdc3;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(120, 110, 100, 0.12);
+            margin-bottom: 25px;
+        }
+
+        .detail-row {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 12px 0;
+            border-bottom: 1px solid #d8d0c7;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            width: 180px;
+            font-weight: 600;
+            color: #7c8b84;
+        }
+
+        .value {
+            flex: 1;
+            color: #5f5a55;
+            word-break: break-word;
+        }
+
+        .button-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background-color: #a8b7ab;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        button:hover {
+            background-color: #94a398;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #cfc6bc;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-top: 12px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            margin: 12px 0;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        .success-message {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .comment-item {
+            border-top: 1px solid #d8d0c7;
+            padding: 16px 0;
+        }
+
+        .comment-item:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .comment-content {
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+        }
+
+        .comment-time {
+            font-size: 13px;
+            color: #7c8b84;
+        }
+
+        #commentFormArea {
+            display: none;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .label {
+                width: 100%;
+                margin-bottom: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <h1>Resource Detail</h1>
+
+    <div class="detail-box">
+        <div class="detail-row">
+            <div class="label">ID</div>
+            <div class="value" th:text="${resource.id}"></div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Title</div>
+            <div class="value" th:text="${resource.title}"></div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Description</div>
+            <div class="value" th:text="${resource.description}"></div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Place</div>
+            <div class="value" th:text="${resource.place}"></div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Category ID</div>
+            <div class="value" th:text="${resource.categoryId}"></div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Type</div>
+            <div class="value" th:text="${resource.resourceType}"></div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Status</div>
+            <div class="value" th:text="${resource.status}"></div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Reviewed At</div>
+            <div class="value" th:text="${resource.reviewedAt}"></div>
+        </div>
+
+        <div class="button-area">
+            <button type="button" onclick="goBack()">Back</button>
+        </div>
+    </div>
+
+    <div class="comment-box">
+        <h2>Comments</h2>
+
+        <button type="button" onclick="toggleCommentForm()">Post a comment</button>
+
+        <div id="commentFormArea">
+            <form th:action="@{/page/resources/{id}/comments(id=${resource.id})}" method="post">
+                <textarea name="content" placeholder="Write your comment here..."></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div th:if="${commentError}" class="message error-message" th:text="${commentError}"></div>
+        <div th:if="${commentSuccess}" class="message success-message" th:text="${commentSuccess}"></div>
+
+        <div th:if="${#lists.isEmpty(comments)}">
+            <p>No comments yet.</p>
+        </div>
+
+<div th:if="${!#lists.isEmpty(comments)}">
+    <div class="comment-item" th:each="comment : ${comments}">
+        <div class="comment-content" th:text="${comment.content}"></div>
+        <div class="comment-time">
+            <span th:text="'User ID: ' + ${comment.userId}"></span>
+            <span style="margin-left: 12px;" th:text="${comment.createdAt}"></span>
+        </div>
+
+        <div th:if="${currentUserId != null and comment.userId == currentUserId}" style="margin-top:10px;">
+            <form th:action="@{/page/resources/{resourceId}/comments/{commentId}/delete(resourceId=${resource.id}, commentId=${comment.id})}"
+                  method="post"
+                  onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                <button type="submit">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function goBack() {
+        window.location.href = "/index.html";
+    }
+
+    function toggleCommentForm() {
+        const formArea = document.getElementById("commentFormArea");
+        if (formArea.style.display === "none" || formArea.style.display === "") {
+            formArea.style.display = "block";
+        } else {
+            formArea.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
