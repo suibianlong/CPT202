@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Applications</title>
+</head>
+<body>
+<h1>Pending Contributor Applications</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Application ID</th>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>Submitted At</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="application : ${pendingApplications}">
+        <td th:text="${application.applicationId}"></td>
+        <td th:text="${application.user.userId}"></td>
+        <td th:text="${application.user.username}"></td>
+        <td th:text="${application.submittedAt}"></td>
+        <td>
+            <a th:href="@{/admin/contributor-applications/{id}(id=${application.applicationId})}">Review</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

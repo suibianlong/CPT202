@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Application Detail</title>
+</head>
+<body>
+<h1>Application Detail</h1>
+
+<p>Application ID: <span th:text="${application.applicationId}"></span></p>
+<p>User ID: <span th:text="${application.user.userId}"></span></p>
+<p>Username: <span th:text="${application.user.username}"></span></p>
+<p>Application Reason: <span th:text="${application.applicationReason}"></span></p>
+<p>Approval Status: <span th:text="${application.approvalStatus}"></span></p>
+
+<h2>Approve</h2>
+<form th:action="@{/admin/contributor-applications/{id}/approve(id=${application.applicationId})}" method="post">
+    <p>
+        Reviewer ID:
+        <input type="number" name="reviewerId" required>
+    </p>
+    <p>
+        Review Comment:
+        <textarea name="reviewComment" rows="4" cols="50"></textarea>
+    </p>
+    <button type="submit">Approve</button>
+</form>
+
+<h2>Reject</h2>
+<form th:action="@{/admin/contributor-applications/{id}/reject(id=${application.applicationId})}" method="post">
+    <p>
+        Reviewer ID:
+        <input type="number" name="reviewerId" required>
+    </p>
+    <p>
+        Review Comment:
+        <textarea name="reviewComment" rows="4" cols="50"></textarea>
+    </p>
+    <button type="submit">Reject</button>
+</form>
+
+<p>
+    <a th:href="@{/admin/contributor-applications}">Back to pending list</a>
+</p>
+</body>
+</html>
