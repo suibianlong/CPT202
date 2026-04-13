@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cpt202.module3.mapper.ContributorRequestMapper">
+
+    <resultMap id="ContributorRequestResultMap" type="com.cpt202.module3.entity.ContributorRequest">
+        <id column="request_id" property="requestId"/>
+        <result column="user_id" property="userId"/>
+        <result column="status" property="status"/>
+        <result column="requested_at" property="requestedAt"/>
+        <result column="reviewed_at" property="reviewedAt"/>
+        <result column="reviewed_by" property="reviewedBy"/>
+        <result column="review_comment" property="reviewComment"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <resultMap id="ContributorRequestViewResultMap" type="com.cpt202.module3.vo.ContributorRequestVO">
+        <id column="request_id" property="requestId"/>
+        <result column="user_id" property="userId"/>
+        <result column="reviewed_by" property="reviewedBy"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_email" property="userEmail"/>
+        <result column="status" property="status"/>
+        <result column="review_comment" property="reviewComment"/>
+        <result column="requested_at" property="requestedAt"/>
+        <result column="reviewed_at" property="reviewedAt"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.cpt202.module3.entity.ContributorRequest"
+            useGeneratedKeys="true"
+            keyProperty="requestId">
+        INSERT INTO contributor_request
+        (
+            user_id,
+            status,
+            requested_at,
+            reviewed_at,
+            reviewed_by,
+            review_comment,
+            created_at,
+            updated_at
+        )
+        VALUES
+        (
+            #{userId},
+            #{status},
+            #{requestedAt},
+            #{reviewedAt},
+            #{reviewedBy},
+            #{reviewComment},
+            #{createdAt},
+            #{updatedAt}
+        )
+    </insert>
+
+    <select id="selectLatestByUserId"
+            parameterType="java.lang.Long"
+            resultMap="ContributorRequestResultMap">
+        SELECT
+            request_id,
+            user_id,
+            status,
+            requested_at,
+            reviewed_at,
+            reviewed_by,
+            review_comment,
+            created_at,
+            updated_at
+        FROM contributor_request
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC, request_id DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectById"
+            parameterType="java.lang.Long"
+            resultMap="ContributorRequestResultMap">
+        SELECT
+            request_id,
+            user_id,
+            status,
+            requested_at,
+            reviewed_at,
+            reviewed_by,
+            review_comment,
+            created_at,
+            updated_at
+        FROM contributor_request
+        WHERE request_id = #{requestId}
+    </select>
+
+    <select id="selectByIdForUpdate"
+            parameterType="java.lang.Long"
+            resultMap="ContributorRequestResultMap">
+        SELECT
+            request_id,
+            user_id,
+            status,
+            requested_at,
+            reviewed_at,
+            reviewed_by,
+            review_comment,
+            created_at,
+            updated_at
+        FROM contributor_request
+        WHERE request_id = #{requestId}
+        FOR UPDATE
+    </select>
+
+    <update id="updateReviewDecision"
+            parameterType="com.cpt202.module3.entity.ContributorRequest">
+        UPDATE contributor_request
+        SET
+            status = #{status},
+            reviewed_at = #{reviewedAt},
+            reviewed_by = #{reviewedBy},
+            review_comment = #{reviewComment},
+            updated_at = #{updatedAt}
+        WHERE request_id = #{requestId}
+    </update>
+
+    <select id="selectRequestViewById"
+            parameterType="java.lang.Long"
+            resultMap="ContributorRequestViewResultMap">
+        SELECT
+            cr.request_id,
+            cr.user_id,
+            cr.reviewed_by,
+            u.name AS user_name,
+            u.email AS user_email,
+            cr.status,
+            cr.review_comment,
+            cr.requested_at,
+            cr.reviewed_at,
+            cr.created_at,
+            cr.updated_at
+        FROM contributor_request cr
+        INNER JOIN app_user u
+            ON u.user_id = cr.user_id
+        WHERE cr.request_id = #{requestId}
+    </select>
+
+    <select id="selectPendingRequestViews"
+            resultMap="ContributorRequestViewResultMap">
+        SELECT
+            cr.request_id,
+            cr.user_id,
+            cr.reviewed_by,
+            u.name AS user_name,
+            u.email AS user_email,
+            cr.status,
+            cr.review_comment,
+            cr.requested_at,
+            cr.reviewed_at,
+            cr.created_at,
+            cr.updated_at
+        FROM contributor_request cr
+        INNER JOIN app_user u
+            ON u.user_id = cr.user_id
+        WHERE cr.status = 'PENDING'
+        ORDER BY cr.requested_at ASC, cr.request_id ASC
+    </select>
+
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cpt202.module3.mapper.ResourceSubmissionMapper">
+
+    <resultMap id="ResourceSubmissionResultMap" type="com.cpt202.module3.entity.ResourceSubmission">
+        <id column="submission_id" property="submissionId"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="version_no" property="versionNo"/>
+        <result column="submitted_by" property="submittedBy"/>
+        <result column="submitted_at" property="submittedAt"/>
+        <result column="submission_note" property="submissionNote"/>
+        <result column="status_snapshot" property="statusSnapshot"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.cpt202.module3.entity.ResourceSubmission"
+            useGeneratedKeys="true"
+            keyProperty="submissionId">
+        INSERT INTO resource_submission
+        (
+            resource_id,
+            version_no,
+            submitted_by,
+            submitted_at,
+            submission_note,
+            status_snapshot,
+            created_at
+        )
+        VALUES
+        (
+            #{resourceId},
+            #{versionNo},
+            #{submittedBy},
+            #{submittedAt},
+            #{submissionNote},
+            #{statusSnapshot},
+            #{createdAt}
+        )
+    </insert>
+
+    <select id="countByResourceId"
+            parameterType="java.lang.Long"
+            resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM resource_submission
+        WHERE resource_id = #{resourceId}
+    </select>
+
+    <select id="selectLatestByResourceId"
+            parameterType="java.lang.Long"
+            resultMap="ResourceSubmissionResultMap">
+        SELECT
+            submission_id,
+            resource_id,
+            version_no,
+            submitted_by,
+            submitted_at,
+            submission_note,
+            status_snapshot,
+            created_at
+        FROM resource_submission
+        WHERE resource_id = #{resourceId}
+        ORDER BY version_no DESC, submission_id DESC
+        LIMIT 1
+    </select>
+
+</mapper>
