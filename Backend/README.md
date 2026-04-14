@@ -1,4 +1,4 @@
-# CPT202 Community Heritage Resource Sharing and Curation Platform Frontend
+# CPT202 Community Heritage Resource Sharing and Curation Platform Backend
 
 ## 📋 Overview
 
