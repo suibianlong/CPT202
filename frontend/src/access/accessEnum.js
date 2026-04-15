@@ -1,0 +1,9 @@
+export const ACCESS_ENUM = {
+  NOT_LOGIN: 'NOT_LOGIN',
+  USER: 'USER',
+  CONTRIBUTOR: 'CONTRIBUTOR',
+  REVIEWER: 'REVIEWER',
+  ADMIN: 'ADMIN'
+}
+
+export default ACCESS_ENUM
