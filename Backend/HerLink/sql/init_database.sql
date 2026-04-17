@@ -90,7 +90,7 @@ CREATE TABLE `resourceArchive` (
   `place` VARCHAR(255) NULL COMMENT 'IP/归属地',
   `previewImage` VARCHAR(500) NULL COMMENT '预览图URL',
   `mediaUrl` VARCHAR(500) NULL COMMENT '资源内容URL',
-  `status` ENUM('Draft','Pending Review','Approved','Rejected', 'Archived') NOT NULL COMMENT '状态 Draft/Pending Review/Approved/Rejected/Archived',
+  `status` ENUM('Draft','Pending_Review','Approved','Rejected', 'Archived') NOT NULL COMMENT '状态 Draft/Pending Review/Approved/Rejected/Archived',
   `resourceType` ENUM('Video','Picture','Audio','Document') NOT NULL COMMENT '资源类型',
   `reviewedAt` TIMESTAMP NULL COMMENT '审核通过时间',
   `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
