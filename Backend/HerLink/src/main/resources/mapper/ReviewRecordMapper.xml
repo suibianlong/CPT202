@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cpt202.module3.mapper.ReviewRecordMapper">
+
+    <resultMap id="ReviewRecordResultMap" type="com.cpt202.module3.entity.ReviewRecord">
+        <id column="review_record_id" property="reviewRecordId"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="submission_id" property="submissionId"/>
+        <result column="version_no" property="versionNo"/>
+        <result column="reviewer_id" property="reviewerId"/>
+        <result column="action_description" property="actionDescription"/>
+        <result column="status" property="status"/>
+        <result column="feedback_comment" property="feedbackComment"/>
+        <result column="reviewed_at" property="reviewedAt"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <select id="selectLatestByResourceId"
+            parameterType="java.lang.Long"
+            resultMap="ReviewRecordResultMap">
+        SELECT
+            review_record_id,
+            resource_id,
+            submission_id,
+            version_no,
+            reviewer_id,
+            action_description,
+            status,
+            feedback_comment,
+            reviewed_at,
+            created_at
+        FROM review_record
+        WHERE resource_id = #{resourceId}
+        ORDER BY reviewed_at DESC, review_record_id DESC
+        LIMIT 1
+    </select>
+
+</mapper>

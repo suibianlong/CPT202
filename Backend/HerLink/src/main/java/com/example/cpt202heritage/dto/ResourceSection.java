@@ -1,0 +1,16 @@
+package com.example.cpt202heritage.dto;
+
+import java.time.LocalDateTime;
+
+public record ResourceSection(
+        String title,
+        String description,
+        String place,
+        String resourceType,
+        String previewImage,
+        String mediaUrl,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
+        LocalDateTime reviewedAt
+) {
+}

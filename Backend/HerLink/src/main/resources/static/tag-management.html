@@ -1,0 +1,584 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tag Management</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            background-color: #eef3f8;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: #4f5d6b;
+        }
+
+        .container-box {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding-bottom: 60px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #4f6478;
+            font-weight: 600;
+        }
+
+        .tab-bar {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 6px;
+        }
+
+        .tab-btn {
+            background: #d8e3ee;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 20px;
+            color: #4f6478;
+            white-space: nowrap;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .tab-btn.active {
+            background: #7f9bb3;
+            color: white;
+        }
+
+        .tab-btn:focus,
+        .tab-btn:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .card-box {
+            background: #f8fbfe;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(110, 130, 150, 0.12);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .btn-main {
+            background: #7f9bb3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-main:hover {
+            background: #6e8aa3;
+            color: white;
+        }
+
+        .btn-main:focus,
+        .btn-main:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-soft {
+            background: #dbe6f0;
+            border: none;
+            border-radius: 8px;
+            color: #4f6478;
+            padding: 6px 12px;
+            margin-right: 6px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-soft:hover {
+            background: #c9d8e6;
+        }
+
+        .btn-soft:focus,
+        .btn-soft:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #c9d8e6;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            box-shadow: none !important;
+            border-color: #9cb4c9;
+            outline: none !important;
+        }
+
+        h4 {
+            color: #587089;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        h5 {
+            color: #5f7387;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .table td, .table th {
+            color: #4f5d6b;
+            vertical-align: middle;
+        }
+
+        .status-active {
+            color: #3f7d5f;
+        }
+
+        .status-inactive {
+            color: #e25555;
+        }
+
+        .info-note {
+            font-size: 14px;
+            color: #70808f;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .message-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 300px;
+            max-width: 480px;
+            text-align: center;
+            padding: 16px 22px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            font-weight: 500;
+            background-color: white;
+        }
+
+        .message-success {
+            color: #4f6478;
+            border: 1px solid #d8e3ee;
+        }
+
+        .message-error {
+            color: #c43d3d;
+            border: 1px solid #f0c8c8;
+        }
+
+        .empty-note {
+            color: #8a97a5;
+            font-style: italic;
+        }
+
+        .group-box {
+            background: #f4f8fc;
+            border: 1px solid #dbe6f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .group-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4f6478;
+            margin-bottom: 10px;
+        }
+
+        .group-input {
+            width: 220px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="messageOverlay" class="message-overlay"></div>
+
+<div class="container-box">
+
+    <div class="title">Tag Management</div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="manage">Manage</button>
+        <button class="tab-btn" data-tab="status">Status</button>
+        <button class="tab-btn" data-tab="usage">Usage</button>
+        <button class="tab-btn" data-tab="history">History</button>
+    </div>
+
+    <div class="card-box">
+
+        <div id="manage" class="section active">
+
+            <h4>Tag Repository</h4>
+            <div class="info-note">
+                All tags shown here are collected from user-submitted resources. They are automatically stored and can be reviewed and maintained by administrators.
+            </div>
+
+            <button id="toggleArrangementBtn" class="btn btn-main mb-3">Manual Arrangement</button>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tag Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tagList"></tbody>
+            </table>
+
+            <div id="arrangementArea" style="display:none;">
+                <h5>Review Groups</h5>
+                <div class="info-note">
+                    Similar tags can be placed into the same review group for easier review.
+                </div>
+                <div id="groupList"></div>
+            </div>
+
+        </div>
+
+        <div id="status" class="section">
+            <h4>Status Management</h4>
+            <div class="info-note">
+                Inactive tags are preserved in previous records but cannot be reused for new classification.
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tag Name</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody id="statusList"></tbody>
+            </table>
+        </div>
+
+        <div id="usage" class="section">
+            <h4>Usage Overview</h4>
+            <div class="info-note">
+                Current usage count is displayed for each existing tag.
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tag Name</th>
+                        <th>Usage Count</th>
+                    </tr>
+                </thead>
+                <tbody id="usageList"></tbody>
+            </table>
+        </div>
+
+        <div id="history" class="section">
+            <h4>Usage History</h4>
+            <div class="info-note">
+                Past usage records are grouped by tag and include the related record name and date of use.
+            </div>
+            <div id="historyList"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+var tags = [
+    {id: 1, name: "festival", active: true},
+    {id: 2, name: "history", active: true},
+    {id: 3, name: "religion", active: false}
+];
+
+var tagUsageCounts = {
+    festival: 3,
+    history: 5,
+    religion: 2
+};
+
+var tagUsageHistory = {
+    festival: [
+        {recordName: "Spring Festival Video", date: "2026-04-05"},
+        {recordName: "Temple Fair Photo", date: "2026-04-07"}
+    ],
+    history: [
+        {recordName: "Ancient Story", date: "2026-04-01"}
+    ],
+    religion: [
+        {recordName: "Temple Visit Record", date: "2026-04-03"}
+    ]
+};
+
+var tagGroups = {};
+var arrangementMode = false;
+
+function showMessage(message, isSuccess) {
+    if (isSuccess == true) {
+        $("#messageOverlay").removeClass("message-error");
+        $("#messageOverlay").addClass("message-success");
+    } else {
+        $("#messageOverlay").removeClass("message-success");
+        $("#messageOverlay").addClass("message-error");
+    }
+
+    $("#messageOverlay").text(message);
+    $("#messageOverlay").stop(true, true).fadeIn();
+
+    setTimeout(function() {
+        $("#messageOverlay").fadeOut();
+    }, 2200);
+}
+
+function sortTagsAlphabetically() {
+    tags.sort(function(a, b) {
+        var nameA = a.name.toLowerCase();
+        var nameB = b.name.toLowerCase();
+
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+function render() {
+    sortTagsAlphabetically();
+    renderTagList();
+    renderStatus();
+    renderUsage();
+    renderHistory();
+    renderGroups();
+}
+
+function renderTagList() {
+    $("#tagList").empty();
+
+    if (tags.length == 0) {
+        $("#tagList").append("<tr><td colspan='3' class='empty-note'>No tag is available yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < tags.length; i++) {
+        var statusText = "";
+        var buttonText = "";
+
+        if (tags[i].active == true) {
+            statusText = "<span class='status-active'>Active</span>";
+            buttonText = "Deactivate";
+        } else {
+            statusText = "<span class='status-inactive'>Inactive</span>";
+            buttonText = "Activate";
+        }
+
+        var row = "<tr>"
+            + "<td>" + tags[i].name + "</td>"
+            + "<td>" + statusText + "</td>"
+            + "<td><button class='btn-soft' onclick='toggleTag(" + tags[i].id + ")'>" + buttonText + "</button></td>"
+            + "</tr>";
+
+        $("#tagList").append(row);
+    }
+}
+
+function renderStatus() {
+    $("#statusList").empty();
+
+    if (tags.length == 0) {
+        $("#statusList").append("<tr><td colspan='3' class='empty-note'>No tag is available yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < tags.length; i++) {
+        var statusText = "";
+        var detailText = "";
+
+        if (tags[i].active == true) {
+            statusText = "<span class='status-active'>Active</span>";
+            detailText = "-";
+        } else {
+            statusText = "<span class='status-inactive'>Inactive</span>";
+            detailText = "Preserved in previous records but cannot be reused for new classification.";
+        }
+
+        var row = "<tr>"
+            + "<td>" + tags[i].name + "</td>"
+            + "<td>" + statusText + "</td>"
+            + "<td>" + detailText + "</td>"
+            + "</tr>";
+
+        $("#statusList").append(row);
+    }
+}
+
+function renderUsage() {
+    $("#usageList").empty();
+
+    if (tags.length == 0) {
+        $("#usageList").append("<tr><td colspan='2' class='empty-note'>No tag overview is available yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < tags.length; i++) {
+        var count = 0;
+
+        if (tagUsageCounts[tags[i].name] != undefined) {
+            count = tagUsageCounts[tags[i].name];
+        }
+
+        var row = "<tr>"
+            + "<td>" + tags[i].name + "</td>"
+            + "<td>" + count + "</td>"
+            + "</tr>";
+
+        $("#usageList").append(row);
+    }
+}
+
+function renderHistory() {
+    $("#historyList").empty();
+
+    var hasHistory = false;
+
+    for (var i = 0; i < tags.length; i++) {
+        var tagName = tags[i].name;
+        var arr = tagUsageHistory[tagName];
+
+        if (arr != undefined && arr.length > 0) {
+            hasHistory = true;
+
+            var block = "<div class='group-box'>";
+            block = block + "<div class='group-title'>" + tagName + "</div>";
+            block = block + "<table class='table'><thead><tr><th>Related Record Name</th><th>Date of Use</th></tr></thead><tbody>";
+
+            for (var j = 0; j < arr.length; j++) {
+                block = block + "<tr>"
+                    + "<td>" + arr[j].recordName + "</td>"
+                    + "<td>" + arr[j].date + "</td>"
+                    + "</tr>";
+            }
+
+            block = block + "</tbody></table></div>";
+
+            $("#historyList").append(block);
+        }
+    }
+
+    if (hasHistory == false) {
+        $("#historyList").append("<div class='empty-note'>No usage history is available yet.</div>");
+    }
+}
+
+function renderGroups() {
+    $("#groupList").empty();
+
+    if (arrangementMode == false) {
+        $("#arrangementArea").hide();
+        return;
+    }
+
+    $("#arrangementArea").show();
+
+    if (tags.length == 0) {
+        $("#groupList").append("<div class='empty-note'>No tag is available for manual arrangement yet.</div>");
+        return;
+    }
+
+    for (var i = 0; i < tags.length; i++) {
+        var currentGroup = "";
+
+        if (tagGroups[tags[i].name] != undefined) {
+            currentGroup = tagGroups[tags[i].name];
+        }
+
+        var row = "<div class='group-box'>"
+            + "<div class='group-title'>" + tags[i].name + "</div>"
+            + "<input id='groupInput_" + tags[i].id + "' class='form-control group-input' value='" + currentGroup + "' placeholder='Enter a review group name'>"
+            + "<button class='btn-soft' onclick='saveGroup(" + tags[i].id + ")'>Save Group</button>"
+            + "</div>";
+
+        $("#groupList").append(row);
+    }
+}
+
+function toggleTag(id) {
+    for (var i = 0; i < tags.length; i++) {
+        if (tags[i].id == id) {
+            if (tags[i].active == true) {
+                tags[i].active = false;
+            } else {
+                tags[i].active = true;
+            }
+            break;
+        }
+    }
+
+    render();
+}
+
+$("#toggleArrangementBtn").click(function() {
+    if (arrangementMode == true) {
+        arrangementMode = false;
+    } else {
+        arrangementMode = true;
+    }
+
+    render();
+});
+
+function saveGroup(id) {
+    for (var i = 0; i < tags.length; i++) {
+        if (tags[i].id == id) {
+            var value = $("#groupInput_" + id).val().trim();
+            tagGroups[tags[i].name] = value;
+            break;
+        }
+    }
+
+    showMessage("Group updated successfully!", true);
+    render();
+}
+
+$(".tab-btn").click(function() {
+    $(".tab-btn").removeClass("active");
+    $(this).addClass("active");
+
+    var tab = $(this).data("tab");
+
+    $(".section").removeClass("active");
+    $("#" + tab).addClass("active");
+});
+
+render();
+
+</script>
+
+</body>
+</html>

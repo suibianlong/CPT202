@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Spring Boot with React</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0">
+        <link src="jquery-4.0.0.js"></link>
+        <script>
+            $(document).ready(function(){
+                $("button").click(function(){
+                    $("p").hide();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h1 class="class_1">Welcome to Spring Boot with React</h1>
+        <p id="to-be-hidden" class="class_1">jQuery is cool</p>
+        <p id="not-to-hide">Don't hide <b>me</b>, pleaseeeee</p>
+        <button id="myButton" class="btn btn-primary">Click Me to Hide P</button>
+    </body>
+</html>

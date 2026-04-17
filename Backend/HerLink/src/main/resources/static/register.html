@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="stylesheet" href="./module3.css" />
+</head>
+<body data-page="register">
+<div class="auth-shell">
+    <section class="auth-side scenic-card">
+        <div class="eyebrow portal-eyebrow">Registration</div>
+        <h1>Create a Registered Viewer account</h1>
+        <p>
+            Successful registration assigns the default role of Registered Viewer, exactly as defined in your PBI.
+        </p>
+        <div class="auth-side-links">
+            <a href="./index.html">Back to portal</a>
+            <a href="./login.html">Already have an account?</a>
+        </div>
+    </section>
+
+    <section class="auth-card scenic-card">
+        <div class="section-head">
+            <div>
+                <h2>Create Account</h2>
+                <p>Fill in all required fields with a valid email address and password.</p>
+            </div>
+        </div>
+
+        <form id="registerForm" class="form-stack">
+            <div class="field">
+                <label for="registerName">Name</label>
+                <input id="registerName" type="text" placeholder="Enter your name" autocomplete="name" />
+            </div>
+
+            <div class="field">
+                <label for="registerEmail">Email</label>
+                <input id="registerEmail" type="email" placeholder="name@example.com" autocomplete="email" />
+            </div>
+
+            <div class="field">
+                <label for="registerPassword">Password</label>
+                <input id="registerPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-submit">Register</button>
+        </form>
+
+        <div class="inline-note">
+            Already registered? <a href="./login.html">Go to login</a>.
+        </div>
+    </section>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="./access.js"></script>
+</body>
+</html>

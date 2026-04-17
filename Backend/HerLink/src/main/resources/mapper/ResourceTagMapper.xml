@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cpt202.module3.mapper.ResourceTagMapper">
+
+    <resultMap id="ResourceTagResultMap" type="com.cpt202.module3.entity.ResourceTag">
+        <id column="id" property="id"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="tag_id" property="tagId"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.cpt202.module3.entity.ResourceTag"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO resource_tag
+        (
+            resource_id,
+            tag_id
+        )
+        VALUES
+        (
+            #{resourceId},
+            #{tagId}
+        )
+    </insert>
+
+    <delete id="deleteByResourceId"
+            parameterType="java.lang.Long">
+        DELETE FROM resource_tag
+        WHERE resource_id = #{resourceId}
+    </delete>
+
+    <select id="selectTagIdsByResourceId"
+            parameterType="java.lang.Long"
+            resultType="java.lang.Long">
+        SELECT tag_id
+        FROM resource_tag
+        WHERE resource_id = #{resourceId}
+        ORDER BY id ASC
+    </select>
+
+</mapper>

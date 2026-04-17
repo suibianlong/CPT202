@@ -1,0 +1,970 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Category Management</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            background-color: #eef3f8;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: #4f5d6b;
+        }
+
+        .container-box {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding-bottom: 60px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #4f6478;
+            font-weight: 600;
+        }
+
+        .tab-bar {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 6px;
+        }
+
+        .tab-btn {
+            background: #d8e3ee;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 20px;
+            color: #4f6478;
+            white-space: nowrap;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .tab-btn.active {
+            background: #7f9bb3;
+            color: white;
+        }
+
+        .tab-btn:focus,
+        .tab-btn:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .card-box {
+            background: #f8fbfe;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(110, 130, 150, 0.12);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .btn-main {
+            background: #7f9bb3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-main:hover {
+            background: #6e8aa3;
+            color: white;
+        }
+
+        .btn-main:focus,
+        .btn-main:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-soft {
+            background: #dbe6f0;
+            border: none;
+            border-radius: 8px;
+            color: #4f6478;
+            padding: 6px 12px;
+            margin-right: 6px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-soft:hover {
+            background: #c9d8e6;
+        }
+
+        .btn-soft:focus,
+        .btn-soft:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-cancel {
+            background: #f1f4f7;
+            border: 1px solid #c9d8e6;
+            border-radius: 8px;
+            color: #4f6478;
+            padding: 6px 12px;
+            margin-right: 6px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-cancel:hover {
+            background: #e5edf4;
+        }
+
+        .btn-cancel:focus,
+        .btn-cancel:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-save-page {
+            margin-top: 28px;
+            text-align: center;
+        }
+
+        .btn-save-page button {
+            min-width: 160px;
+            font-size: 16px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #c9d8e6;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            box-shadow: none !important;
+            border-color: #9cb4c9;
+            outline: none !important;
+        }
+
+        .edit-input {
+            width: 180px;
+            display: inline-block;
+            margin-right: 8px;
+            border-radius: 8px;
+            border: 1px solid #9cb4c9;
+            padding: 4px 8px;
+            background-color: white;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .edit-input:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: #9cb4c9;
+        }
+
+        h4 {
+            color: #587089;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        h5 {
+            color: #5f7387;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .table td, .table th {
+            color: #4f5d6b;
+            vertical-align: middle;
+        }
+
+        .status-active {
+            color: #3f7d5f;
+        }
+
+        .status-inactive {
+            color: #e25555;
+        }
+
+        hr {
+            border-top: 1px solid #d8e3ee;
+            margin: 30px 0;
+        }
+
+        .info-note {
+            font-size: 14px;
+            color: #70808f;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .message-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 300px;
+            max-width: 480px;
+            text-align: center;
+            padding: 16px 22px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            font-weight: 500;
+            background-color: white;
+        }
+
+        .message-success {
+            color: #4f6478;
+            border: 1px solid #d8e3ee;
+        }
+
+        .message-error {
+            color: #c43d3d;
+            border: 1px solid #f0c8c8;
+        }
+
+        .empty-note {
+            color: #8a97a5;
+            font-style: italic;
+        }
+
+        .history-group {
+            background: #f4f8fc;
+            border: 1px solid #dbe6f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .history-group-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4f6478;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="messageOverlay" class="message-overlay"></div>
+
+<div class="container-box">
+
+    <div class="title">Category Management</div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="manage">Manage</button>
+        <button class="tab-btn" data-tab="status">Status</button>
+        <button class="tab-btn" data-tab="usage">Usage</button>
+        <button class="tab-btn" data-tab="history">History</button>
+    </div>
+
+    <div class="card-box">
+
+        <div id="manage" class="section active">
+
+            <h4>Type</h4>
+            <div class="info-note">
+                The resource’s format or kind, such as article, image, video, or document.
+            </div>
+
+            <input id="typeInput" class="form-control mb-2" placeholder="Enter a new type name">
+            <button id="addType" class="btn btn-main mb-3">Add Type</button>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="typeList"></tbody>
+            </table>
+
+            <hr>
+
+            <h4>Topic</h4>
+            <div class="info-note">
+                The resource’s theme or content area, such as history, culture, art, or tradition.
+            </div>
+
+            <input id="topicInput" class="form-control mb-2" placeholder="Enter a new topic name">
+            <button id="addTopic" class="btn btn-main mb-3">Add Topic</button>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="topicList"></tbody>
+            </table>
+
+        </div>
+
+        <div id="status" class="section">
+            <h4>Status Management</h4>
+            <div class="info-note">Only active classification items should continue to be used by the system.</div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category Kind</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="statusList"></tbody>
+            </table>
+        </div>
+
+        <div id="usage" class="section">
+            <h4>Usage Overview</h4>
+            <div class="info-note">Current usage information is generated from the items you have created on this page.</div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category Kind</th>
+                        <th>Usage Count</th>
+                    </tr>
+                </thead>
+                <tbody id="usageList"></tbody>
+            </table>
+        </div>
+
+        <div id="history" class="section">
+            <h4>History Records</h4>
+            <div class="info-note">Records are grouped by category item. User usage records are limited to the most recent 7 days.</div>
+
+            <h5>Administrator Actions</h5>
+            <div id="adminHistoryList"></div>
+
+            <h5>Recent User Usage (Last 7 Days)</h5>
+            <div id="userHistoryList"></div>
+        </div>
+
+    </div>
+
+    <div id="saveStructureArea" class="btn-save-page">
+        <button id="saveStructureBtn" class="btn btn-main">Save Structure</button>
+    </div>
+</div>
+
+<script>
+
+var types = [];
+var topics = [];
+
+var typeUsageCounts = {};
+var topicUsageCounts = {};
+
+var adminHistoryRecords = [];
+var userUsageRecords = [];
+
+var editingTypeId = -1;
+var editingTopicId = -1;
+
+function getCurrentDateTime() {
+    var now = new Date();
+
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var day = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+
+    if (month < 10) {
+        month = "0" + month;
+    }
+
+    if (day < 10) {
+        day = "0" + day;
+    }
+
+    if (hour < 10) {
+        hour = "0" + hour;
+    }
+
+    if (minute < 10) {
+        minute = "0" + minute;
+    }
+
+    return year + "-" + month + "-" + day + " " + hour + ":" + minute;
+}
+
+function showMessage(message, isSuccess) {
+    if (isSuccess == true) {
+        $("#messageOverlay").removeClass("message-error");
+        $("#messageOverlay").addClass("message-success");
+    } else {
+        $("#messageOverlay").removeClass("message-success");
+        $("#messageOverlay").addClass("message-error");
+    }
+
+    $("#messageOverlay").text(message);
+    $("#messageOverlay").stop(true, true).fadeIn();
+
+    setTimeout(function() {
+        $("#messageOverlay").fadeOut();
+    }, 2200);
+}
+
+function addAdminHistoryRecord(name, action) {
+    var record = {
+        name: name,
+        action: action,
+        date: getCurrentDateTime()
+    };
+
+    adminHistoryRecords.push(record);
+}
+
+function render() {
+
+    $("#typeList").empty();
+
+    if (types.length == 0) {
+        $("#typeList").append("<tr><td colspan='3' class='empty-note'>No type has been created yet.</td></tr>");
+    }
+
+    for (var i = 0; i < types.length; i++) {
+
+        var statusText = "";
+        var buttonText = "";
+        var nameCell = "";
+
+        if (types[i].active == true) {
+            statusText = "<span class='status-active'>Active</span>";
+            buttonText = "Deactivate";
+        } else {
+            statusText = "<span class='status-inactive'>Inactive</span>";
+            buttonText = "Activate";
+        }
+
+        if (editingTypeId == types[i].id) {
+            nameCell = "<input id='editTypeInput_" + types[i].id + "' class='edit-input' value='" + types[i].name + "'>"
+                + "<button class='btn-soft' onclick='saveTypeEdit(" + types[i].id + ")'>Save</button>"
+                + "<button class='btn-cancel' onclick='cancelTypeEdit()'>Cancel</button>";
+        } else {
+            nameCell = types[i].name;
+        }
+
+        var row = "<tr>"
+            + "<td>" + nameCell + "</td>"
+            + "<td>" + statusText + "</td>"
+            + "<td>";
+
+        if (editingTypeId != types[i].id) {
+            row = row
+                + "<button class='btn-soft' onclick='editType(" + types[i].id + ")'>Edit</button>"
+                + "<button class='btn-soft' onclick='toggleType(" + types[i].id + ")'>" + buttonText + "</button>";
+        }
+
+        row = row + "</td></tr>";
+
+        $("#typeList").append(row);
+    }
+
+    $("#topicList").empty();
+
+    if (topics.length == 0) {
+        $("#topicList").append("<tr><td colspan='3' class='empty-note'>No topic has been created yet.</td></tr>");
+    }
+
+    for (var j = 0; j < topics.length; j++) {
+
+        var statusText2 = "";
+        var buttonText2 = "";
+        var nameCell2 = "";
+
+        if (topics[j].active == true) {
+            statusText2 = "<span class='status-active'>Active</span>";
+            buttonText2 = "Deactivate";
+        } else {
+            statusText2 = "<span class='status-inactive'>Inactive</span>";
+            buttonText2 = "Activate";
+        }
+
+        if (editingTopicId == topics[j].id) {
+            nameCell2 = "<input id='editTopicInput_" + topics[j].id + "' class='edit-input' value='" + topics[j].name + "'>"
+                + "<button class='btn-soft' onclick='saveTopicEdit(" + topics[j].id + ")'>Save</button>"
+                + "<button class='btn-cancel' onclick='cancelTopicEdit()'>Cancel</button>";
+        } else {
+            nameCell2 = topics[j].name;
+        }
+
+        var row2 = "<tr>"
+            + "<td>" + nameCell2 + "</td>"
+            + "<td>" + statusText2 + "</td>"
+            + "<td>";
+
+        if (editingTopicId != topics[j].id) {
+            row2 = row2
+                + "<button class='btn-soft' onclick='editTopic(" + topics[j].id + ")'>Edit</button>"
+                + "<button class='btn-soft' onclick='toggleTopic(" + topics[j].id + ")'>" + buttonText2 + "</button>";
+        }
+
+        row2 = row2 + "</td></tr>";
+
+        $("#topicList").append(row2);
+    }
+
+    $("#statusList").empty();
+
+    if (types.length == 0 && topics.length == 0) {
+        $("#statusList").append("<tr><td colspan='3' class='empty-note'>No category item has been created yet.</td></tr>");
+    }
+
+    for (var a = 0; a < types.length; a++) {
+        var typeStatus = "";
+        if (types[a].active == true) {
+            typeStatus = "<span class='status-active'>Active</span>";
+        } else {
+            typeStatus = "<span class='status-inactive'>Inactive</span>";
+        }
+
+        var typeRow = "<tr>"
+            + "<td>" + types[a].name + "</td>"
+            + "<td>Type</td>"
+            + "<td>" + typeStatus + "</td>"
+            + "</tr>";
+
+        $("#statusList").append(typeRow);
+    }
+
+    for (var b = 0; b < topics.length; b++) {
+        var topicStatus = "";
+        if (topics[b].active == true) {
+            topicStatus = "<span class='status-active'>Active</span>";
+        } else {
+            topicStatus = "<span class='status-inactive'>Inactive</span>";
+        }
+
+        var topicRow = "<tr>"
+            + "<td>" + topics[b].name + "</td>"
+            + "<td>Topic</td>"
+            + "<td>" + topicStatus + "</td>"
+            + "</tr>";
+
+        $("#statusList").append(topicRow);
+    }
+
+    $("#usageList").empty();
+
+    if (types.length == 0 && topics.length == 0) {
+        $("#usageList").append("<tr><td colspan='3' class='empty-note'>No usage information is available yet.</td></tr>");
+    }
+
+    for (var c = 0; c < types.length; c++) {
+        var typeName = types[c].name;
+        var typeCount = 0;
+
+        if (typeUsageCounts[typeName] != undefined) {
+            typeCount = typeUsageCounts[typeName];
+        }
+
+        var usageRow1 = "<tr>"
+            + "<td>" + typeName + "</td>"
+            + "<td>Type</td>"
+            + "<td>" + typeCount + "</td>"
+            + "</tr>";
+
+        $("#usageList").append(usageRow1);
+    }
+
+    for (var d = 0; d < topics.length; d++) {
+        var topicName = topics[d].name;
+        var topicCount = 0;
+
+        if (topicUsageCounts[topicName] != undefined) {
+            topicCount = topicUsageCounts[topicName];
+        }
+
+        var usageRow2 = "<tr>"
+            + "<td>" + topicName + "</td>"
+            + "<td>Topic</td>"
+            + "<td>" + topicCount + "</td>"
+            + "</tr>";
+
+        $("#usageList").append(usageRow2);
+    }
+
+    renderAdminHistory();
+    renderUserHistory();
+}
+
+function renderAdminHistory() {
+    $("#adminHistoryList").empty();
+
+    var grouped = {};
+
+    for (var i = 0; i < adminHistoryRecords.length; i++) {
+        var name = adminHistoryRecords[i].name;
+
+        if (grouped[name] == undefined) {
+            grouped[name] = [];
+        }
+
+        grouped[name].push(adminHistoryRecords[i]);
+    }
+
+    var hasGroup = false;
+
+    for (var key in grouped) {
+        hasGroup = true;
+
+        var block = "<div class='history-group'>";
+        block = block + "<div class='history-group-title'>" + key + "</div>";
+        block = block + "<table class='table'><thead><tr><th>Action</th><th>Date</th></tr></thead><tbody>";
+
+        for (var j = 0; j < grouped[key].length; j++) {
+            block = block + "<tr>"
+                + "<td>" + grouped[key][j].action + "</td>"
+                + "<td>" + grouped[key][j].date + "</td>"
+                + "</tr>";
+        }
+
+        block = block + "</tbody></table></div>";
+
+        $("#adminHistoryList").append(block);
+    }
+
+    if (hasGroup == false) {
+        $("#adminHistoryList").append("<div class='empty-note'>No administrator action record is available yet.</div>");
+    }
+}
+
+function renderUserHistory() {
+    $("#userHistoryList").empty();
+
+    var recentRecords = [];
+    var now = new Date();
+
+    for (var i = 0; i < userUsageRecords.length; i++) {
+        var recordDate = new Date(userUsageRecords[i].date);
+        var diff = now.getTime() - recordDate.getTime();
+        var days = diff / (1000 * 60 * 60 * 24);
+
+        if (days <= 7) {
+            recentRecords.push(userUsageRecords[i]);
+        }
+    }
+
+    var grouped = {};
+
+    for (var j = 0; j < recentRecords.length; j++) {
+        var name = recentRecords[j].name;
+
+        if (grouped[name] == undefined) {
+            grouped[name] = [];
+        }
+
+        grouped[name].push(recentRecords[j]);
+    }
+
+    var hasGroup = false;
+
+    for (var key in grouped) {
+        hasGroup = true;
+
+        var block = "<div class='history-group'>";
+        block = block + "<div class='history-group-title'>" + key + "</div>";
+        block = block + "<table class='table'><thead><tr><th>Related Record Name</th><th>Date of Use</th></tr></thead><tbody>";
+
+        for (var k = 0; k < grouped[key].length; k++) {
+            block = block + "<tr>"
+                + "<td>" + grouped[key][k].relatedRecordName + "</td>"
+                + "<td>" + grouped[key][k].date + "</td>"
+                + "</tr>";
+        }
+
+        block = block + "</tbody></table></div>";
+
+        $("#userHistoryList").append(block);
+    }
+
+    if (hasGroup == false) {
+        $("#userHistoryList").append("<div class='empty-note'>No recent user usage record is available yet.</div>");
+    }
+}
+
+$("#addType").click(function() {
+
+    var name = $("#typeInput").val().trim();
+
+    if (name == "") {
+        showMessage("Type name is invalid!", false);
+        return;
+    }
+
+    var duplicated = false;
+
+    for (var i = 0; i < types.length; i++) {
+        if (types[i].name.toLowerCase() == name.toLowerCase()) {
+            duplicated = true;
+            break;
+        }
+    }
+
+    if (duplicated == true) {
+        showMessage("Category name is invalid!", false);
+        return;
+    }
+
+    var newObj = {
+        id: new Date().getTime(),
+        name: name,
+        active: true
+    };
+
+    types.push(newObj);
+    typeUsageCounts[name] = 0;
+    $("#typeInput").val("");
+    addAdminHistoryRecord(name, "Created");
+    render();
+    showMessage("Added successfully!", true);
+});
+
+$("#addTopic").click(function() {
+
+    var name = $("#topicInput").val().trim();
+
+    if (name == "") {
+        showMessage("Topic name is invalid!", false);
+        return;
+    }
+
+    var duplicated = false;
+
+    for (var i = 0; i < topics.length; i++) {
+        if (topics[i].name.toLowerCase() == name.toLowerCase()) {
+            duplicated = true;
+            break;
+        }
+    }
+
+    if (duplicated == true) {
+        showMessage("Category name is invalid!", false);
+        return;
+    }
+
+    var newObj = {
+        id: new Date().getTime(),
+        name: name,
+        active: true
+    };
+
+    topics.push(newObj);
+    topicUsageCounts[name] = 0;
+    $("#topicInput").val("");
+    addAdminHistoryRecord(name, "Created");
+    render();
+    showMessage("Added successfully!", true);
+});
+
+function editType(id) {
+    editingTypeId = id;
+    render();
+}
+
+function cancelTypeEdit() {
+    editingTypeId = -1;
+    render();
+}
+
+function saveTypeEdit(id) {
+
+    var newName = $("#editTypeInput_" + id).val().trim();
+
+    if (newName == "") {
+        showMessage("Type name is invalid!", false);
+        return;
+    }
+
+    for (var i = 0; i < types.length; i++) {
+        if (types[i].name.toLowerCase() == newName.toLowerCase() && types[i].id != id) {
+            showMessage("Category name is invalid!", false);
+            return;
+        }
+    }
+
+    for (var j = 0; j < types.length; j++) {
+        if (types[j].id == id) {
+            var oldName = types[j].name;
+            types[j].name = newName;
+
+            if (typeUsageCounts[oldName] != undefined) {
+                typeUsageCounts[newName] = typeUsageCounts[oldName];
+                delete typeUsageCounts[oldName];
+            }
+
+            for (var h = 0; h < adminHistoryRecords.length; h++) {
+                if (adminHistoryRecords[h].name == oldName) {
+                    adminHistoryRecords[h].name = newName;
+                }
+            }
+
+            for (var u = 0; u < userUsageRecords.length; u++) {
+                if (userUsageRecords[u].name == oldName) {
+                    userUsageRecords[u].name = newName;
+                }
+            }
+
+            addAdminHistoryRecord(newName, "Updated");
+            break;
+        }
+    }
+
+    editingTypeId = -1;
+    render();
+    showMessage("Updated successfully!", true);
+}
+
+function editTopic(id) {
+    editingTopicId = id;
+    render();
+}
+
+function cancelTopicEdit() {
+    editingTopicId = -1;
+    render();
+}
+
+function saveTopicEdit(id) {
+
+    var newName = $("#editTopicInput_" + id).val().trim();
+
+    if (newName == "") {
+        showMessage("Topic name is invalid!", false);
+        return;
+    }
+
+    for (var i = 0; i < topics.length; i++) {
+        if (topics[i].name.toLowerCase() == newName.toLowerCase() && topics[i].id != id) {
+            showMessage("Category name is invalid!", false);
+            return;
+        }
+    }
+
+    for (var j = 0; j < topics.length; j++) {
+        if (topics[j].id == id) {
+            var oldName = topics[j].name;
+            topics[j].name = newName;
+
+            if (topicUsageCounts[oldName] != undefined) {
+                topicUsageCounts[newName] = topicUsageCounts[oldName];
+                delete topicUsageCounts[oldName];
+            }
+
+            for (var h = 0; h < adminHistoryRecords.length; h++) {
+                if (adminHistoryRecords[h].name == oldName) {
+                    adminHistoryRecords[h].name = newName;
+                }
+            }
+
+            for (var u = 0; u < userUsageRecords.length; u++) {
+                if (userUsageRecords[u].name == oldName) {
+                    userUsageRecords[u].name = newName;
+                }
+            }
+
+            addAdminHistoryRecord(newName, "Updated");
+            break;
+        }
+    }
+
+    editingTopicId = -1;
+    render();
+    showMessage("Updated successfully!", true);
+}
+
+function toggleType(id) {
+
+    for (var i = 0; i < types.length; i++) {
+        if (types[i].id == id) {
+            if (types[i].active == true) {
+                types[i].active = false;
+                addAdminHistoryRecord(types[i].name, "Deactivated");
+            } else {
+                types[i].active = true;
+                addAdminHistoryRecord(types[i].name, "Activated");
+            }
+            break;
+        }
+    }
+
+    render();
+}
+
+function toggleTopic(id) {
+
+    for (var i = 0; i < topics.length; i++) {
+        if (topics[i].id == id) {
+            if (topics[i].active == true) {
+                topics[i].active = false;
+                addAdminHistoryRecord(topics[i].name, "Deactivated");
+            } else {
+                topics[i].active = true;
+                addAdminHistoryRecord(topics[i].name, "Activated");
+            }
+            break;
+        }
+    }
+
+    render();
+}
+
+$("#saveStructureBtn").click(function() {
+    if (types.length == 0 || topics.length == 0) {
+        showMessage("Structure is incomplete!", false);
+        return;
+    }
+
+    showMessage("Saved successfully!", true);
+});
+
+$(".tab-btn").click(function() {
+    $(".tab-btn").removeClass("active");
+    $(this).addClass("active");
+
+    var tab = $(this).data("tab");
+
+    $(".section").removeClass("active");
+    $("#" + tab).addClass("active");
+
+    if (tab == "manage") {
+        $("#saveStructureArea").show();
+    } else {
+        $("#saveStructureArea").hide();
+    }
+});
+
+render();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+</head>
+<body>
+<h1>Edit Profile</h1>
+
+<p th:if="${successMessage}" th:text="${successMessage}"></p>
+
+<form th:action="@{/profile/edit}" th:object="${user}" method="post">
+    <input type="hidden" th:field="*{userId}">
+
+    <p>
+        Username:
+        <span th:text="*{username}"></span>
+    </p>
+
+    <p>
+        Email:
+        <span th:text="*{email}"></span>
+    </p>
+
+    <p>
+        Contributor Status:
+        <span th:text="*{contributorStatus}"></span>
+    </p>
+
+    <p>
+        Bio:
+        <textarea th:field="*{bio}" rows="6" cols="50"></textarea>
+    </p>
+
+    <button type="submit">Update Profile</button>
+</form>
+
+<p>
+    <a th:href="@{/contributor/apply(userId=${user.userId})}">Apply to become Contributor</a>
+</p>
+
+<p>
+    <a th:href="@{/contributor/status(userId=${user.userId})}">View Application Status</a>
+</p>
+</body>
+</html>

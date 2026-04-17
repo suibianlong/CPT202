@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Application Status</title>
+</head>
+<body>
+<h1>Application Status</h1>
+
+<p>
+    Username: <span th:text="${user.username}"></span>
+</p>
+
+<p>
+    Contributor Status: <span th:text="${user.contributorStatus}"></span>
+</p>
+
+<div th:if="${latestApplication != null}">
+    <p>Application ID: <span th:text="${latestApplication.applicationId}"></span></p>
+    <p>Approval Status: <span th:text="${latestApplication.approvalStatus}"></span></p>
+    <p>Submitted At: <span th:text="${latestApplication.submittedAt}"></span></p>
+    <p>Review Comment: <span th:text="${latestApplication.reviewComment}"></span></p>
+</div>
+
+<div th:if="${latestApplication == null}">
+    <p>No application submitted yet.</p>
+</div>
+
+<p>
+    <a th:href="@{/profile/edit(userId=${user.userId})}">Back to Profile</a>
+</p>
+</body>
+</html>

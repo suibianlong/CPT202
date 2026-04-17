@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Apply Contributor</title>
+</head>
+<body>
+<h1>Contributor Application</h1>
+
+<p>
+    Username: <span th:text="${user.username}"></span>
+</p>
+<p>
+    Current Contributor Status: <span th:text="${user.contributorStatus}"></span>
+</p>
+
+<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+<form th:action="@{/contributor/apply(userId=${user.userId})}" th:object="${applicationForm}" method="post">
+    <p>
+        Application Reason:
+        <textarea th:field="*{applicationReason}" rows="8" cols="60"></textarea>
+    </p>
+
+    <button type="submit">Submit Application</button>
+</form>
+
+<p>
+    <a th:href="@{/profile/edit(userId=${user.userId})}">Back to Profile</a>
+</p>
+</body>
+</html>
