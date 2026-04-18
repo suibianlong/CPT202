@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Feedback</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #f4f1ed;
+            color: #5f5a55;
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 12px;
+            color: #6f7c75;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 28px;
+            color: #8a8178;
+            font-size: 15px;
+        }
+
+        .feedback-box,
+        .record-box {
+            background-color: #e9e3dc;
+            border: 1px solid #d6cdc3;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(120, 110, 100, 0.12);
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #7c8b84;
+        }
+
+        select, textarea, input[type="file"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #cfc6bc;
+            border-radius: 10px;
+            font-size: 14px;
+            background-color: #f8f5f1;
+            color: #5f5a55;
+            outline: none;
+        }
+
+        select:focus, textarea:focus, input[type="file"]:focus {
+            border-color: #a8b7ab;
+            box-shadow: 0 0 0 3px rgba(168, 183, 171, 0.18);
+        }
+
+        textarea {
+            min-height: 160px;
+            resize: vertical;
+        }
+
+        .message {
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        .success-message {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .button-area {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: #a8b7ab;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        button:hover {
+            background-color: #94a398;
+        }
+
+        .secondary-btn {
+            background-color: #b7a7ad;
+        }
+
+        .secondary-btn:hover {
+            background-color: #a59198;
+        }
+
+        .debug-info {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #8a8178;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .section-title {
+            color: #6f7c75;
+            font-size: 24px;
+            margin-bottom: 18px;
+        }
+
+        .feedback-item {
+            background-color: #f8f5f1;
+            border: 1px solid #d6cdc3;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+
+        .feedback-item p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .feedback-item strong {
+            color: #7c8b84;
+        }
+
+        .empty-message {
+            background-color: #f8f5f1;
+            border: 1px solid #d6cdc3;
+            border-radius: 14px;
+            padding: 18px;
+            color: #7a726b;
+        }
+
+        .attachment-block {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #d8d0c7;
+        }
+
+        .attachment-image {
+            display: block;
+            max-width: 320px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            background-color: #ffffff;
+        }
+
+        .attachment-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #6f7c75;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <h1>Feedback</h1>
+    <div class="subtitle">Submit a bug report or suggestion for the platform</div>
+
+    <div class="feedback-box">
+        <div th:if="${feedbackError}" class="message error-message" th:text="${feedbackError}"></div>
+        <div th:if="${feedbackSuccess}" class="message success-message" th:text="${feedbackSuccess}"></div>
+
+        <form th:action="@{/page/feedback}" method="post" enctype="multipart/form-data">
+            <div class="form-row">
+                <label for="feedbackType">Feedback Type</label>
+                <select id="feedbackType" name="feedbackType" required>
+                    <option value="">Select feedback type</option>
+                    <option value="Bug Report">Bug Report</option>
+                    <option value="Suggestion">Suggestion</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label for="description">Description</label>
+                <textarea id="description"
+                          name="description"
+                          placeholder="Please describe the problem or your suggestion here..."
+                          required></textarea>
+            </div>
+
+            <div class="form-row">
+                <label for="files">Attachments (optional, up to 3 files)</label>
+                <input id="files" type="file" name="files" multiple accept=".jpg,.png,.pdf,.txt">
+            </div>
+
+            <div class="button-area">
+                <button type="submit">Submit</button>
+                <button type="button" class="secondary-btn" onclick="goBack()">Back</button>
+            </div>
+        </form>
+
+        <div class="debug-info">
+            <div>
+                Current User ID:
+                <span th:text="${currentUserId}">1</span>
+            </div>
+            <div>
+                Current User Role:
+                <span th:text="${currentUserRole}">user</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="record-box">
+        <div class="section-title">Feedback Records</div>
+
+        <div th:if="${#lists.isEmpty(feedbackList)}" class="empty-message">
+            No feedback submitted yet.
+        </div>
+
+        <div th:if="${!#lists.isEmpty(feedbackList)}">
+            <div class="feedback-item" th:each="feedback : ${feedbackList}">
+                <p><strong>Feedback ID:</strong> <span th:text="${feedback.feedbackId}"></span></p>
+                <p><strong>User ID:</strong> <span th:text="${feedback.userId}"></span></p>
+                <p><strong>Type:</strong> <span th:text="${feedback.feedbackType}"></span></p>
+                <p><strong>Description:</strong> <span th:text="${feedback.description}"></span></p>
+                <p><strong>File Number:</strong> <span th:text="${feedback.fileNum}"></span></p>
+                <p><strong>Uploaded At:</strong> <span th:text="${feedback.uploadedAt}"></span></p>
+
+                <div class="attachment-block"
+                     th:if="${feedback.attachedFiles != null and !#lists.isEmpty(feedback.attachedFiles)}">
+                    <p><strong>Attachments:</strong></p>
+
+                    <div th:each="file : ${feedback.attachedFiles}">
+                        <img th:if="${file.fileType == 'JPG' or file.fileType == 'PNG'}"
+                             th:src="${file.filePath}"
+                             alt="Attachment Image"
+                             class="attachment-image">
+
+                        <a th:if="${file.fileType == 'PDF' or file.fileType == 'TXT'}"
+                           th:href="${file.filePath}"
+                           target="_blank"
+                           class="attachment-link"
+                           th:text="${file.originalFilename}">
+                            Open Attachment
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function goBack() {
+        window.location.href = "/index.html";
+    }
+</script>
+
+</body>
+</html>

@@ -33,7 +33,7 @@ public class CommentService {
         Resource resource = resourceRepository.findById(resourceId)
                 .orElseThrow(() -> new IllegalArgumentException("Resource not found."));
 
-        if (resource.getStatus() != ResourceStatus.APPROVED) {
+        if (resource.getStatus() != ResourceStatus.Approved) {
             throw new IllegalArgumentException("This resource is not available for commenting.");
         }
         
@@ -59,14 +59,17 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void deleteComment(Long commentId, Long userId) {
-    Comment comment = commentRepository.findById(commentId)
-            .orElseThrow(() -> new IllegalArgumentException("Comment not found."));
+    public void deleteComment(Long commentId, Long userId, String userRole) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found."));
 
-    if (!comment.getUserId().equals(userId)) {
-        throw new IllegalArgumentException("You can only delete your own comment.");
+        boolean isOwner = comment.getUserId().equals(userId);
+        boolean isReviewer = "reviewer".equalsIgnoreCase(userRole);
+
+        if (!isOwner && !isReviewer) {
+            throw new IllegalArgumentException("You do not have permission to delete this comment.");
+        }
+
+        commentRepository.delete(comment);
     }
-
-    commentRepository.delete(comment);
-}
 }

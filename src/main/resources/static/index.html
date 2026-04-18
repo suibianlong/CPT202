@@ -20,6 +20,12 @@
             padding: 40px 20px 60px;
         }
 
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+
         h1 {
             text-align: center;
             font-size: 34px;
@@ -74,6 +80,15 @@
             font-size: 14px;
             cursor: pointer;
             transition: all 0.25s ease;
+        }
+
+        #feedbackBtn {
+            background-color: #a8b7ab;
+            color: white;
+        }
+
+        #feedbackBtn:hover {
+            background-color: #94a398;
         }
 
         #loadAllBtn {
@@ -164,24 +179,42 @@
             input, select, button {
                 width: 100%;
             }
+
+            .top-bar {
+                justify-content: stretch;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="page-container">
-    <h1>Heritage Resource Viewer</h1>
+    <div class="top-bar">
+        <button id="feedbackBtn" onclick="goToFeedback()">Feedback</button>
+    </div>
+
+    <h1 id="pageTitle">Heritage Resource Viewer</h1>
     <div class="subtitle">Browse, search and explore approved heritage resources</div>
 
     <div class="control-panel">
         <div class="control-row">
             <input type="text" id="keyword" placeholder="Enter keyword">
 
-            <select id="categoryId">
+            <select id="type">
+                <option value="">Select type</option>
+                <option value="Picture">Picture</option>
+                <option value="Video">Video</option>
+                <option value="Audio">Audio</option>
+                <option value="Document">Document</option>
+            </select>
+
+            <select id="topic">
                 <option value="">Select category</option>
-                <option value="1">Category 1</option>
-                <option value="2">Category 2</option>
-                <option value="3">Category 3</option>
+                <option value="1">Places</option>
+                <option value="2">Traditions</option>
+                <option value="3">Stories</option>
+                <option value="4">Objects</option>
+                <option value="5">Educational Materials</option>
             </select>
 
             <select id="sortBy">
@@ -200,75 +233,82 @@
 </div>
 
 <script>
-    function renderResources(resources) {
-        $("#resourceList").empty();
+function renderResources(resources) {
+    $("#resourceList").empty();
 
-        if (resources.length === 0) {
-            $("#resourceList").html('<div class="empty-message">No matched resources.</div>');
-            return;
+    if (resources.length === 0) {
+        $("#resourceList").html('<div class="empty-message">No matched resources.</div>');
+        return;
+    }
+
+    $.each(resources, function(index, resource) {
+        let card = `
+            <div class="resource-card">
+                <div class="resource-title">${resource.title}</div>
+                <p><strong>ID:</strong> ${resource.id}</p>
+                <p><strong>Description:</strong> ${resource.description}</p>
+                <p><strong>Type:</strong> ${resource.resourceType ?? ''}</p>
+                <p><strong>Category ID:</strong> ${resource.categoryId ?? ''}</p>
+                <p><strong>Status:</strong> ${resource.status}</p>
+                <button class="detail-btn" onclick="goToDetail(${resource.id})">View Detail</button>
+            </div>
+        `;
+        $("#resourceList").append(card);
+    });
+}
+
+function loadAllResources() {
+    $.ajax({
+        url: "/resources",
+        type: "GET",
+        success: function(data) {
+            renderResources(data);
+        },
+        error: function() {
+            alert("Failed to load resources.");
         }
-
-        $.each(resources, function(index, resource) {
-            let card = `
-                <div class="resource-card">
-                    <div class="resource-title">${resource.title}</div>
-                    <p><strong>ID:</strong> ${resource.id}</p>
-                    <p><strong>Description:</strong> ${resource.description}</p>
-                    <p><strong>Category ID:</strong> ${resource.categoryId}</p>
-                    <p><strong>Status:</strong> ${resource.status}</p>
-                    <button class="detail-btn" onclick="goToDetail(${resource.id})">View Detail</button>
-                </div>
-            `;
-            $("#resourceList").append(card);
-        });
-    }
-
-    function loadAllResources() {
-        $.ajax({
-            url: "/resources",
-            type: "GET",
-            success: function(data) {
-                renderResources(data);
-            },
-            error: function() {
-                alert("Failed to load resources.");
-            }
-        });
-    }
-
-    function goToDetail(id) {
-        window.location.href = "/page/resources/" + id;
-    }
-
-    $("#loadAllBtn").click(function() {
-        loadAllResources();
     });
+}
 
-    $("#searchAllBtn").click(function() {
-        let keyword = $("#keyword").val().trim();
-        let categoryId = $("#categoryId").val();
-        let sortBy = $("#sortBy").val();
+function goToDetail(id) {
+    window.location.href = "/page/resources/" + id;
+}
 
-        $.ajax({
-            url: "/resources/query",
-            type: "GET",
-            data: {
-                keyword: keyword,
-                categoryId: categoryId,
-                sortBy: sortBy
-            },
-            success: function(data) {
-                renderResources(data);
-            },
-            error: function() {
-                alert("Search failed.");
-            }
-        });
+function goToFeedback() {
+    window.location.href = "/page/feedback";
+}
+
+$("#loadAllBtn").click(function() {
+    loadAllResources();
+});
+
+$("#searchAllBtn").click(function() {
+    let keyword = $("#keyword").val().trim();
+    let type = $("#type").val();
+    let topic = $("#topic").val();
+    let sortBy = $("#sortBy").val();
+
+    $.ajax({
+        url: "/resources/query",
+        type: "GET",
+        data: {
+            keyword: keyword,
+            type: type,
+            topic: topic,
+            sortBy: sortBy
+        },
+        success: function(data) {
+            renderResources(data);
+        },
+        error: function() {
+            alert("Search failed.");
+        }
     });
+});
 
-    $(document).ready(function() {
-        loadAllResources();
-    });
+$(document).ready(function() {
+    loadAllResources();
+});
 </script>
 
 </body>

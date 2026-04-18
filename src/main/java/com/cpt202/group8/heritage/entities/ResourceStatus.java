@@ -1,9 +1,9 @@
 package com.cpt202.group8.heritage.entities;
 
 public enum ResourceStatus {
-    DRAFT,
-    PENDING_REVIEW,
-    APPROVED,
-    REJECTED,
-    ARCHIVED
+    Draft,
+    Pending_Review,
+    Approved,
+    Rejected,
+    Archived
 }

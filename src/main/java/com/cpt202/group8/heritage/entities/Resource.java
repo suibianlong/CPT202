@@ -1,5 +1,5 @@
 package com.cpt202.group8.heritage.entities;
-
+import java.util.List;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -11,7 +11,7 @@ public class Resource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "contributor_id", nullable = false)
+    @Column(name = "contributorId", nullable = false)
     private Long contributorId;
 
     @Column(name = "title", nullable = false, length = 255)
@@ -20,36 +20,44 @@ public class Resource {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "category_id", nullable = false)
+    @Column(name = "categoryId", nullable = false)
     private Long categoryId;
 
     @Column(name = "place", length = 255)
     private String place;
 
-    @Column(name = "preview_image", length = 500)
+    @Column(name = "previewImage", length = 500)
     private String previewImage;
 
-    @Column(name = "media_url", length = 500)
+    @Column(name = "mediaUrl", length = 500)
     private String mediaUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 50)
     private ResourceStatus status;
 
-    @Column(name = "reviewed_at")
+    @Column(name = "reviewedAt")
     private LocalDateTime reviewedAt;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updatedAt", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "archived_at")
+    @Transient
     private LocalDateTime archivedAt;
 
-    @Column(name = "resource_type", nullable = false, length = 50)
+    @Column(name = "resourceType", nullable = false, length = 50)
     private String resourceType;
+
+    @ManyToMany
+    @JoinTable(
+        name = "resourceTag",
+        joinColumns = @JoinColumn(name = "resourceId"),
+        inverseJoinColumns = @JoinColumn(name = "tagId")
+    )
+    private List<Tag> tags;
 
     public Resource() {
     }
@@ -72,6 +80,7 @@ public class Resource {
         this.archivedAt = archivedAt;
         this.resourceType = resourceType;
     }
+
 
     public Long getId() {
         return id;
@@ -179,6 +188,14 @@ public class Resource {
 
     public void setResourceType(String resourceType) {
         this.resourceType = resourceType;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override

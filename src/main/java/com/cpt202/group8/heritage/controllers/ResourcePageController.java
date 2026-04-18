@@ -27,10 +27,16 @@ public class ResourcePageController {
 
     @GetMapping("/{id}")
     public String showDetailPage(@PathVariable Long id, Model model, HttpSession session) {
+
+            // 临时测试用！！！：手动设置当前用户
+        session.setAttribute("userId", 4L);
+        session.setAttribute("userRole", "reviewer");
+
+
         Resource resource = resourceRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Resource not found."));
 
-        if (resource.getStatus() != ResourceStatus.APPROVED) {
+        if (resource.getStatus() != ResourceStatus.Approved) {
             throw new IllegalArgumentException("This resource item is not accessible.");
         }
 
@@ -38,12 +44,18 @@ public class ResourcePageController {
 
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
-            userId = 1L;
+            userId = 1L;//后面改成跳转登录界面
+        }
+
+        String userRole = (String) session.getAttribute("userRole");
+        if (userRole == null) {
+            userRole = "user";
         }
 
         model.addAttribute("resource", resource);
         model.addAttribute("comments", comments);
         model.addAttribute("currentUserId", userId);
+        model.addAttribute("currentUserRole", userRole);
 
         return "detail";
     }
@@ -57,7 +69,7 @@ public class ResourcePageController {
         Long userId = (Long) session.getAttribute("userId");
 
         if (userId == null) {
-            userId = 1L;
+            userId = 1L; //后面对接了改成跳转登录界面
         }
 
         try {
@@ -70,20 +82,24 @@ public class ResourcePageController {
         return "redirect:/page/resources/" + id;
     }
 
-    @PostMapping("/{resourceId}/comments/{commentId}/delete")
+   @PostMapping("/{resourceId}/comments/{commentId}/delete")
     public String deleteComment(@PathVariable Long resourceId,
                                 @PathVariable Long commentId,
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes) {
 
         Long userId = (Long) session.getAttribute("userId");
-
         if (userId == null) {
-            userId = 1L;
+            userId = 1L;//后面对接了改成跳转登录界面
+        }
+
+        String userRole = (String) session.getAttribute("userRole");
+        if (userRole == null) {
+            userRole = "user";
         }
 
         try {
-            commentService.deleteComment(commentId, userId);
+            commentService.deleteComment(commentId, userId, userRole);
             redirectAttributes.addFlashAttribute("commentSuccess", "Comment deleted successfully.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("commentError", e.getMessage());

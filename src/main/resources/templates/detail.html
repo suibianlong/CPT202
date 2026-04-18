@@ -42,12 +42,13 @@
             border-bottom: 1px solid #d8d0c7;
         }
 
-        .detail-row:last-child {
+        .detail-row:last-of-type {
             border-bottom: none;
         }
 
         .label {
             width: 180px;
+            flex-shrink: 0;
             font-weight: 600;
             color: #7c8b84;
         }
@@ -133,6 +134,35 @@
             margin-top: 15px;
         }
 
+        .media-preview {
+            display: block;
+            width: 100%;
+            max-width: 420px;
+            max-height: 420px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-top: 6px;
+            background-color: #f8f5f1;
+        }
+
+        .document-link {
+            display: inline-block;
+            margin-top: 6px;
+            color: #6f7c75;
+            text-decoration: underline;
+        }
+
+        .tag-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            background-color: #d8e0d8;
+            color: #5f5a55;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+
         @media (max-width: 600px) {
             .detail-row {
                 flex-direction: column;
@@ -148,23 +178,16 @@
 <body>
 
 <div class="page-container">
-    <h1>Resource Detail</h1>
+    <h1 id="pageTitle" th:text="${resource.title}">Resource Detail</h1>
 
     <div class="detail-box">
         <div class="detail-row">
             <div class="label">ID</div>
             <div class="value" th:text="${resource.id}"></div>
+            
         </div>
 
-        <div class="detail-row">
-            <div class="label">Title</div>
-            <div class="value" th:text="${resource.title}"></div>
-        </div>
 
-        <div class="detail-row">
-            <div class="label">Description</div>
-            <div class="value" th:text="${resource.description}"></div>
-        </div>
 
         <div class="detail-row">
             <div class="label">Place</div>
@@ -174,6 +197,16 @@
         <div class="detail-row">
             <div class="label">Category ID</div>
             <div class="value" th:text="${resource.categoryId}"></div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Tags</div>
+            <div class="value">
+                <span th:if="${resource.tags == null or #lists.isEmpty(resource.tags)}">No tags</span>
+                <span th:if="${resource.tags != null and !#lists.isEmpty(resource.tags)}">
+                    <span th:each="tag : ${resource.tags}" class="tag-badge" th:text="${tag.tagName}">Tag</span>
+                </span>
+            </div>
         </div>
 
         <div class="detail-row">
@@ -189,6 +222,61 @@
         <div class="detail-row">
             <div class="label">Reviewed At</div>
             <div class="value" th:text="${resource.reviewedAt}"></div>
+        </div>
+
+        <!-- <div class="detail-row">
+            <div class="label">Preview Image</div>
+            <div class="value">
+                <img th:if="${resource.previewImage != null and !#strings.isEmpty(resource.previewImage)}"
+                     th:src="${resource.previewImage}"
+                     alt="Preview Image"
+                     class="media-preview">
+                <span th:if="${resource.previewImage == null or #strings.isEmpty(resource.previewImage)}">
+                    No preview image
+                </span>
+            </div>
+        </div> -->
+
+        <div class="detail-row">
+            <div class="label">Media</div>
+            <div class="value">
+                <div th:if="${resource.mediaUrl != null and !#strings.isEmpty(resource.mediaUrl)}">
+                    <img th:if="${resource.resourceType == 'Picture'}"
+                         th:src="${resource.mediaUrl}"
+                         alt="Picture"
+                         class="media-preview">
+
+                    <video th:if="${resource.resourceType == 'Video'}"
+                           controls
+                           class="media-preview">
+                        <source th:src="${resource.mediaUrl}">
+                        Your browser does not support the video tag.
+                    </video>
+
+                    <audio th:if="${resource.resourceType == 'Audio'}"
+                           controls
+                           style="width: 100%; max-width: 420px; margin-top: 6px;">
+                        <source th:src="${resource.mediaUrl}">
+                        Your browser does not support the audio tag.
+                    </audio>
+
+                    <a th:if="${resource.resourceType == 'Document'}"
+                       th:href="${resource.mediaUrl}"
+                       target="_blank"
+                       class="document-link">
+                        Open Document
+                    </a>
+                </div>
+
+                <span th:if="${resource.mediaUrl == null or #strings.isEmpty(resource.mediaUrl)}">
+                    No media content
+                </span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label">Description</div>
+            <div class="value" th:text="${resource.description}"></div>
         </div>
 
         <div class="button-area">
@@ -215,20 +303,22 @@
             <p>No comments yet.</p>
         </div>
 
-<div th:if="${!#lists.isEmpty(comments)}">
-    <div class="comment-item" th:each="comment : ${comments}">
-        <div class="comment-content" th:text="${comment.content}"></div>
-        <div class="comment-time">
-            <span th:text="'User ID: ' + ${comment.userId}"></span>
-            <span style="margin-left: 12px;" th:text="${comment.createdAt}"></span>
-        </div>
+        <div th:if="${!#lists.isEmpty(comments)}">
+            <div class="comment-item" th:each="comment : ${comments}">
+                <div class="comment-content" th:text="${comment.content}"></div>
+                <div class="comment-time">
+                    <span th:text="'User ID: ' + ${comment.userId}"></span>
+                    <span style="margin-left: 12px;" th:text="${comment.createdAt}"></span>
+                </div>
 
-        <div th:if="${currentUserId != null and comment.userId == currentUserId}" style="margin-top:10px;">
-            <form th:action="@{/page/resources/{resourceId}/comments/{commentId}/delete(resourceId=${resource.id}, commentId=${comment.id})}"
-                  method="post"
-                  onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                <button type="submit">Delete</button>
-            </form>
+                <div th:if="${currentUserId != null and (comment.userId == currentUserId or currentUserRole == 'reviewer')}" style="margin-top:10px;">
+                    <form th:action="@{/page/resources/{resourceId}/comments/{commentId}/delete(resourceId=${resource.id}, commentId=${comment.id})}"
+                        method="post"
+                        onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
