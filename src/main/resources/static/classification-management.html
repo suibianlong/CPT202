@@ -1,0 +1,1420 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Classification Management</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            background-color: #eef3f8;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: #4f5d6b;
+        }
+
+        .container-box {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding-bottom: 60px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #4f6478;
+            font-weight: 600;
+        }
+
+        .tab-bar {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 6px;
+        }
+
+        .tab-btn {
+            background: #d8e3ee;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 20px;
+            color: #4f6478;
+            white-space: nowrap;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .tab-btn.active {
+            background: #7f9bb3;
+            color: white;
+        }
+
+        .tab-btn:focus,
+        .tab-btn:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .card-box {
+            background: #f8fbfe;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(110, 130, 150, 0.12);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .btn-main {
+            background: #7f9bb3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-main:hover {
+            background: #6e8aa3;
+            color: white;
+        }
+
+        .btn-main:focus,
+        .btn-main:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-soft {
+            background: #dbe6f0;
+            border: none;
+            border-radius: 8px;
+            color: #4f6478;
+            padding: 6px 12px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-soft:hover {
+            background: #c9d8e6;
+        }
+
+        .btn-soft:focus,
+        .btn-soft:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-cancel {
+            background: #f1f4f7;
+            border: 1px solid #c9d8e6;
+            border-radius: 8px;
+            color: #4f6478;
+            padding: 6px 12px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-cancel:hover {
+            background: #e5edf4;
+        }
+
+        .btn-cancel:focus,
+        .btn-cancel:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #c9d8e6;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            box-shadow: none !important;
+            border-color: #9cb4c9;
+            outline: none !important;
+        }
+
+        .edit-input {
+            width: 180px;
+            display: inline-block;
+            margin-right: 8px;
+            border-radius: 8px;
+            border: 1px solid #9cb4c9;
+            padding: 4px 8px;
+            background-color: white;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .edit-input:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: #9cb4c9;
+        }
+
+        h4 {
+            color: #587089;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        h5 {
+            color: #5f7387;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .table td, .table th {
+            color: #4f5d6b;
+            vertical-align: middle;
+        }
+
+        .status-active {
+            color: #3f7d5f;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: #e25555;
+            font-weight: 600;
+        }
+
+        hr {
+            border-top: 1px solid #d8e3ee;
+            margin: 30px 0;
+        }
+
+        .info-note {
+            font-size: 14px;
+            color: #70808f;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .message-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 300px;
+            max-width: 480px;
+            text-align: center;
+            padding: 16px 22px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            font-weight: 500;
+            background-color: white;
+        }
+
+        .message-success {
+            color: #4f6478;
+            border: 1px solid #d8e3ee;
+        }
+
+        .message-error {
+            color: #c43d3d;
+            border: 1px solid #f0c8c8;
+        }
+
+        .empty-note {
+            color: #8a97a5;
+            font-style: italic;
+        }
+
+        .history-group {
+            background: #f4f8fc;
+            border: 1px solid #dbe6f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .history-group-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4f6478;
+            margin-bottom: 10px;
+        }
+
+        .structure-panel {
+            background: #f4f8fc;
+            border: 1px solid #dbe6f0;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 24px;
+        }
+
+        .structure-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+            margin-top: 12px;
+        }
+
+        .structure-actions button {
+            height: 52px !important;
+            min-width: 190px;
+            padding: 0 24px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            line-height: 1 !important;
+            font-size: 16px;
+            margin: 0 !important;
+            box-sizing: border-box;
+        }
+
+        .structure-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .structure-badge.saved {
+            background: #dcebe2;
+            color: #3f7d5f;
+        }
+
+        .structure-badge.unsaved {
+            background: #f7e2e2;
+            color: #c43d3d;
+        }
+
+        .saved-structure-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .saved-dimension-card {
+            background: #ffffff;
+            border: 1px solid #dbe6f0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .saved-dimension-card ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .saved-dimension-card li {
+            margin-bottom: 6px;
+        }
+
+        .details-modal {
+            display: none;
+            position: fixed;
+            z-index: 9998;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(43, 58, 72, 0.35);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .details-modal-content {
+            width: 100%;
+            max-width: 560px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18);
+        }
+
+        .details-row {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .lock-note {
+            background: #f7fafc;
+            border: 1px dashed #c9d8e6;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            color: #70808f;
+        }
+
+        @media (max-width: 768px) {
+            .saved-structure-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="messageOverlay" class="message-overlay"></div>
+
+<div id="detailsModal" class="details-modal">
+    <div class="details-modal-content">
+        <h4 id="detailsTitle">Item Details</h4>
+        <div id="detailsBody"></div>
+        <div class="mt-3 text-right">
+            <button class="btn btn-cancel" onclick="closeDetailsModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="container-box">
+
+    <div class="title">Classification Management</div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="manage">Manage</button>
+        <button class="tab-btn" data-tab="usage">Usage</button>
+        <button class="tab-btn" data-tab="history">Admin History</button>
+    </div>
+
+    <div class="card-box">
+
+        <div id="manage" class="section active">
+            <div class="structure-panel">
+                <div id="structureStatusBadge" class="structure-badge unsaved">Structure not saved</div>
+                <div class="info-note" style="margin-bottom: 8px;">
+                    Save the current structure only after both dimensions are complete. Type and Topic must both exist, otherwise the structure is incomplete.
+                </div>
+                <div id="structureSummary" class="info-note" style="margin-bottom: 0;"></div>
+                <div class="structure-actions">
+                    <button id="saveStructureBtn" class="btn btn-main">Save Structure</button>
+                    <button id="refreshStructureBtn" class="btn btn-cancel">Refresh Data</button>
+                </div>
+                <div id="savedStructurePreview"></div>
+            </div>
+
+            <h4>Type</h4>
+            <div class="info-note">
+                The resource’s format or kind, such as article, image, video, or document.
+            </div>
+
+            <input id="typeInput" class="form-control mb-2" placeholder="Enter a new type name">
+            <button id="addType" class="btn btn-main mb-3">Add Type</button>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="typeList"></tbody>
+            </table>
+
+            <hr>
+
+            <h4>Topic</h4>
+            <div class="info-note">
+                The resource’s theme or content area, such as history, culture, art, or tradition.
+            </div>
+
+            <input id="topicInput" class="form-control mb-2" placeholder="Enter a new topic name">
+            <button id="addTopic" class="btn btn-main mb-3">Add Topic</button>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="topicList"></tbody>
+            </table>
+
+        </div>
+
+        <div id="usage" class="section">
+            <h4>Usage Overview</h4>
+            <div id="usageLockNote" class="lock-note"></div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Classification Kind</th>
+                        <th>Usage Count</th>
+                    </tr>
+                </thead>
+                <tbody id="usageList"></tbody>
+            </table>
+
+            <h5>Resource Usage Records</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Classification Kind</th>
+                        <th>Related Record Name</th>
+                        <th>Date of Use</th>
+                    </tr>
+                </thead>
+                <tbody id="usageHistoryList"></tbody>
+            </table>
+        </div>
+
+        <div id="history" class="section">
+            <h4>Admin Action History</h4>
+            <div id="historyLockNote" class="lock-note"></div>
+
+            <h5>Administrator Actions</h5>
+            <div id="adminHistoryList"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+var types = [];
+var topics = [];
+
+var editingTypeId = -1;
+var editingTopicId = -1;
+
+var adminHistoryRecords = [];
+var currentAdministrator = "Admin A";
+var structureSaved = false;
+var savedStructureSnapshot = { types: [], topics: [], savedAt: "" };
+var itemMetaStore = {};
+var usageHistoryStore = [];
+
+function getCurrentDateTime() {
+    var now = new Date();
+
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var day = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+
+    if (month < 10) {
+        month = "0" + month;
+    }
+
+    if (day < 10) {
+        day = "0" + day;
+    }
+
+    if (hour < 10) {
+        hour = "0" + hour;
+    }
+
+    if (minute < 10) {
+        minute = "0" + minute;
+    }
+
+    return year + "-" + month + "-" + day + " " + hour + ":" + minute;
+}
+
+function showMessage(message, isSuccess) {
+    if (isSuccess == true) {
+        $("#messageOverlay").removeClass("message-error");
+        $("#messageOverlay").addClass("message-success");
+    } else {
+        $("#messageOverlay").removeClass("message-success");
+        $("#messageOverlay").addClass("message-error");
+    }
+
+    $("#messageOverlay").text(message);
+    $("#messageOverlay").stop(true, true).fadeIn();
+
+    setTimeout(function() {
+        $("#messageOverlay").fadeOut();
+    }, 2200);
+}
+
+function saveLocalState() {
+    localStorage.setItem("classification_admin_history", JSON.stringify(adminHistoryRecords));
+    localStorage.setItem("classification_structure_saved", structureSaved ? "true" : "false");
+    localStorage.setItem("classification_structure_snapshot", JSON.stringify(savedStructureSnapshot));
+    localStorage.setItem("classification_item_meta", JSON.stringify(itemMetaStore));
+}
+
+function loadLocalState() {
+    var storedHistory = localStorage.getItem("classification_admin_history");
+    var storedSaved = localStorage.getItem("classification_structure_saved");
+    var storedSnapshot = localStorage.getItem("classification_structure_snapshot");
+    var storedMeta = localStorage.getItem("classification_item_meta");
+
+    adminHistoryRecords = storedHistory ? JSON.parse(storedHistory) : [];
+    structureSaved = storedSaved === "true";
+    savedStructureSnapshot = storedSnapshot ? JSON.parse(storedSnapshot) : { types: [], topics: [], savedAt: "" };
+    itemMetaStore = storedMeta ? JSON.parse(storedMeta) : {};
+}
+
+function getItemMetaKey(kind, id) {
+    return kind + "_" + id;
+}
+
+function ensureItemMeta(kind, id, name, status, usageCount) {
+    var key = getItemMetaKey(kind, id);
+
+    if (itemMetaStore[key] == null) {
+        itemMetaStore[key] = {
+            createdAt: getCurrentDateTime(),
+            updatedAt: getCurrentDateTime(),
+            lastKnownName: name,
+            status: status,
+            usageCount: usageCount == null ? 0 : usageCount
+        };
+    }
+
+    if (name != null) {
+        itemMetaStore[key].lastKnownName = name;
+    }
+
+    if (status != null) {
+        itemMetaStore[key].status = status;
+    }
+
+    if (usageCount != null) {
+        itemMetaStore[key].usageCount = usageCount;
+    }
+
+    return itemMetaStore[key];
+}
+
+function updateItemMeta(kind, id, name, status, usageCount, isNew) {
+    var meta = ensureItemMeta(kind, id, name, status, usageCount);
+
+    if (isNew === true && meta.createdAt == null) {
+        meta.createdAt = getCurrentDateTime();
+    }
+
+    meta.updatedAt = getCurrentDateTime();
+    meta.lastKnownName = name;
+    meta.status = status;
+    meta.usageCount = usageCount == null ? 0 : usageCount;
+    saveLocalState();
+}
+
+function addAdminHistoryRecord(name, kind, action) {
+    adminHistoryRecords.push({
+        name: name,
+        kind: kind,
+        action: action,
+        date: getCurrentDateTime(),
+        administrator: currentAdministrator
+    });
+
+    saveLocalState();
+}
+
+function markStructureAsUnsaved() {
+    if (structureSaved == true) {
+        structureSaved = false;
+        saveLocalState();
+    }
+}
+
+function getDisplayStatus(status) {
+    if (status == "ACTIVE") {
+        return "<span class='status-active'>Active</span>";
+    }
+
+    return "<span class='status-inactive'>Inactive</span>";
+}
+
+function normalizeItemsWithMeta(items, kind) {
+    for (var i = 0; i < items.length; i++) {
+        var meta = ensureItemMeta(kind, items[i].id, items[i].name, items[i].status, items[i].usageCount);
+        items[i].createdAt = meta.createdAt;
+        items[i].updatedAt = meta.updatedAt;
+    }
+}
+
+function isDuplicateName(name, kind, currentId) {
+    var normalized = name.toLowerCase();
+    var allItems = [];
+
+    for (var i = 0; i < types.length; i++) {
+        allItems.push({ id: types[i].id, name: types[i].name, kind: "Type" });
+    }
+
+    for (var j = 0; j < topics.length; j++) {
+        allItems.push({ id: topics[j].id, name: topics[j].name, kind: "Topic" });
+    }
+
+    for (var k = 0; k < allItems.length; k++) {
+        if (currentId != null && allItems[k].id == currentId && allItems[k].kind == kind) {
+            continue;
+        }
+
+        if (allItems[k].name != null && allItems[k].name.toLowerCase() == normalized) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function closeDetailsModal() {
+    $("#detailsModal").fadeOut(150);
+}
+
+function openDetailsModal(kind, id) {
+    var item = null;
+    var itemList = kind == "Type" ? types : topics;
+
+    for (var i = 0; i < itemList.length; i++) {
+        if (itemList[i].id == id) {
+            item = itemList[i];
+            break;
+        }
+    }
+
+    if (item == null) {
+        showMessage("Item details cannot be loaded!", false);
+        return;
+    }
+
+    var reuseText = item.status == "ACTIVE"
+        ? "This item can be used for new classification."
+        : "This item is preserved in previous records but cannot be reused for new classification.";
+
+    var detailsHtml = ""
+        + "<div class='details-row'><strong>Name:</strong> " + escapeHtml(item.name) + "</div>"
+        + "<div class='details-row'><strong>Classification Kind:</strong> " + kind + "</div>"
+        + "<div class='details-row'><strong>Status:</strong> " + (item.status == "ACTIVE" ? "Active" : "Inactive") + "</div>"
+        + "<div class='details-row'><strong>Usage Count:</strong> " + (item.usageCount == null ? 0 : item.usageCount) + "</div>"
+        + "<div class='details-row'><strong>Created Time:</strong> " + (item.createdAt || "-") + "</div>"
+        + "<div class='details-row'><strong>Last Updated Time:</strong> " + (item.updatedAt || "-") + "</div>"
+        + "<div class='details-row'><strong>Availability Note:</strong> " + reuseText + "</div>";
+
+    $("#detailsTitle").text(kind + " Details");
+    $("#detailsBody").html(detailsHtml);
+    $("#detailsModal").css("display", "flex").hide().fadeIn(150);
+}
+
+function loadTypesFromBackend() {
+    return $.ajax({
+        url: "/resourceTypes",
+        type: "GET",
+        success: function(data) {
+            types = [];
+
+            for (var i = 0; i < data.length; i++) {
+                types.push({
+                    id: data[i].resourceTypeId,
+                    name: data[i].typeName,
+                    status: data[i].status,
+                    usageCount: data[i].usageCount == null ? 0 : data[i].usageCount
+                });
+            }
+
+            normalizeItemsWithMeta(types, "Type");
+        },
+        error: function() {
+            showMessage("Failed to load types from backend!", false);
+        }
+    });
+}
+
+function loadTopicsFromBackend() {
+    return $.ajax({
+        url: "/categoryTopics",
+        type: "GET",
+        success: function(data) {
+            topics = [];
+
+            for (var i = 0; i < data.length; i++) {
+                topics.push({
+                    id: data[i].categoryId,
+                    name: data[i].categoryTopic,
+                    status: data[i].status,
+                    usageCount: data[i].usageCount == null ? 0 : data[i].usageCount
+                });
+            }
+
+            normalizeItemsWithMeta(topics, "Topic");
+        },
+        error: function() {
+            showMessage("Failed to load topics from backend!", false);
+        }
+    });
+}
+
+function loadUsageHistoryFromBackend() {
+    return $.ajax({
+        url: "/classificationUsageHistory",
+        type: "GET",
+        success: function(data) {
+            usageHistoryStore = data || [];
+        },
+        error: function() {
+            usageHistoryStore = [];
+            showMessage("Failed to load usage records from backend!", false);
+        }
+    });
+}
+
+function loadAllData() {
+    $.when(
+        loadTypesFromBackend(),
+        loadTopicsFromBackend(),
+        loadUsageHistoryFromBackend()
+    ).done(function() {
+        render();
+        saveLocalState();
+    });
+}
+
+function render() {
+    renderStructurePanel();
+    renderTypeList();
+    renderTopicList();
+    renderUsage();
+    renderUsageHistory();
+    renderAdminHistory();
+}
+
+function renderStructurePanel() {
+    var hasType = types.length > 0;
+    var hasTopic = topics.length > 0;
+    var summaryText = "Current structure contains " + types.length + " type item(s) and " + topics.length + " topic item(s).";
+
+    if (structureSaved == true) {
+        $("#structureStatusBadge").removeClass("unsaved").addClass("saved").text("Structure saved");
+        if (savedStructureSnapshot.savedAt) {
+            summaryText += " Last saved at " + savedStructureSnapshot.savedAt + ".";
+        }
+    } else {
+        $("#structureStatusBadge").removeClass("saved").addClass("unsaved").text("Structure not saved");
+        if (hasType == false || hasTopic == false) {
+            summaryText += " Type and Topic must both exist before saving.";
+        } else {
+            summaryText += " Save the current structure to confirm both dimensions.";
+        }
+    }
+
+    $("#structureSummary").text(summaryText);
+
+    var previewHtml = "<h5>Saved Structure Review</h5>";
+
+    if (structureSaved == false || savedStructureSnapshot.types.length == 0 || savedStructureSnapshot.topics.length == 0) {
+        previewHtml += "<div class='empty-note'>No saved structure is available yet.</div>";
+    } else {
+        previewHtml += "<div class='saved-structure-grid'>"
+            + "<div class='saved-dimension-card'><strong>Type</strong><ul>";
+
+        for (var i = 0; i < savedStructureSnapshot.types.length; i++) {
+            previewHtml += "<li>" + escapeHtml(savedStructureSnapshot.types[i]) + "</li>";
+        }
+
+        previewHtml += "</ul></div><div class='saved-dimension-card'><strong>Topic</strong><ul>";
+
+        for (var j = 0; j < savedStructureSnapshot.topics.length; j++) {
+            previewHtml += "<li>" + escapeHtml(savedStructureSnapshot.topics[j]) + "</li>";
+        }
+
+        previewHtml += "</ul></div></div>";
+    }
+
+    $("#savedStructurePreview").html(previewHtml);
+}
+
+function renderTypeList() {
+    $("#typeList").empty();
+
+    if (types.length == 0) {
+        $("#typeList").append("<tr><td colspan='4' class='empty-note'>No type has been created yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < types.length; i++) {
+        var buttonText = "";
+        var detailText = "";
+        var nameCell = "";
+
+        if (types[i].status == "ACTIVE") {
+            buttonText = "Deactivate";
+            detailText = "Available for new classification.";
+        } else {
+            buttonText = "Activate";
+            detailText = "Preserved in previous records. Cannot be used for new classification.";
+        }
+
+        if (editingTypeId == types[i].id) {
+            nameCell = "<input id='editTypeInput_" + types[i].id + "' class='edit-input' value='" + escapeHtml(types[i].name) + "'>"
+                + "<button class='btn-soft' onclick='saveTypeEdit(" + types[i].id + ")'>Save</button>"
+                + "<button class='btn-cancel' onclick='cancelTypeEdit()'>Cancel</button>";
+        } else {
+            nameCell = escapeHtml(types[i].name);
+        }
+
+        var row = "<tr>"
+            + "<td>" + nameCell + "</td>"
+            + "<td>" + getDisplayStatus(types[i].status) + "</td>"
+            + "<td>" + detailText + "</td>"
+            + "<td>";
+
+        if (editingTypeId != types[i].id) {
+            row += "<button class='btn-soft' onclick='openDetailsModal(\"Type\", " + types[i].id + ")'>View Details</button>"
+                + "<button class='btn-soft' onclick='editType(" + types[i].id + ")'>Edit</button>"
+                + "<button class='btn-soft' onclick='toggleType(" + types[i].id + ", \"" + types[i].status + "\")'>" + buttonText + "</button>";
+        }
+
+        row += "</td></tr>";
+
+        $("#typeList").append(row);
+    }
+}
+
+function renderTopicList() {
+    $("#topicList").empty();
+
+    if (topics.length == 0) {
+        $("#topicList").append("<tr><td colspan='4' class='empty-note'>No topic has been created yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < topics.length; i++) {
+        var buttonText = "";
+        var detailText = "";
+        var nameCell = "";
+
+        if (topics[i].status == "ACTIVE") {
+            buttonText = "Deactivate";
+            detailText = "Available for new classification.";
+        } else {
+            buttonText = "Activate";
+            detailText = "Preserved in previous records. Cannot be used for new classification.";
+        }
+
+        if (editingTopicId == topics[i].id) {
+            nameCell = "<input id='editTopicInput_" + topics[i].id + "' class='edit-input' value='" + escapeHtml(topics[i].name) + "'>"
+                + "<button class='btn-soft' onclick='saveTopicEdit(" + topics[i].id + ")'>Save</button>"
+                + "<button class='btn-cancel' onclick='cancelTopicEdit()'>Cancel</button>";
+        } else {
+            nameCell = escapeHtml(topics[i].name);
+        }
+
+        var row = "<tr>"
+            + "<td>" + nameCell + "</td>"
+            + "<td>" + getDisplayStatus(topics[i].status) + "</td>"
+            + "<td>" + detailText + "</td>"
+            + "<td>";
+
+        if (editingTopicId != topics[i].id) {
+            row += "<button class='btn-soft' onclick='openDetailsModal(\"Topic\", " + topics[i].id + ")'>View Details</button>"
+                + "<button class='btn-soft' onclick='editTopic(" + topics[i].id + ")'>Edit</button>"
+                + "<button class='btn-soft' onclick='toggleTopic(" + topics[i].id + ", \"" + topics[i].status + "\")'>" + buttonText + "</button>";
+        }
+
+        row += "</td></tr>";
+
+        $("#topicList").append(row);
+    }
+}
+
+function renderUsage() {
+    $("#usageList").empty();
+
+    if (structureSaved == false) {
+        $("#usageLockNote").text("Save the structure first before reviewing usage information.");
+        $("#usageList").append("<tr><td colspan='3' class='empty-note'>No usage information is available yet.</td></tr>");
+        return;
+    }
+
+    $("#usageLockNote").text("The saved structure is active. Updated usage count is shown below for each classification item.");
+
+    if (types.length == 0 && topics.length == 0) {
+        $("#usageList").append("<tr><td colspan='3' class='empty-note'>No usage information is available yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < types.length; i++) {
+        var row1 = "<tr>"
+            + "<td>" + escapeHtml(types[i].name) + "</td>"
+            + "<td>Type</td>"
+            + "<td>" + (types[i].usageCount == null ? 0 : types[i].usageCount) + "</td>"
+            + "</tr>";
+
+        $("#usageList").append(row1);
+    }
+
+    for (var j = 0; j < topics.length; j++) {
+        var row2 = "<tr>"
+            + "<td>" + escapeHtml(topics[j].name) + "</td>"
+            + "<td>Topic</td>"
+            + "<td>" + (topics[j].usageCount == null ? 0 : topics[j].usageCount) + "</td>"
+            + "</tr>";
+
+        $("#usageList").append(row2);
+    }
+}
+
+function renderUsageHistory() {
+    $("#usageHistoryList").empty();
+
+    if (structureSaved == false) {
+        $("#usageHistoryList").append("<tr><td colspan='4' class='empty-note'>No usage records are available until the structure is saved.</td></tr>");
+        return;
+    }
+
+    if (usageHistoryStore.length == 0) {
+        $("#usageHistoryList").append("<tr><td colspan='4' class='empty-note'>No resource usage record is available yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < usageHistoryStore.length; i++) {
+        var row = "<tr>"
+            + "<td>" + escapeHtml(usageHistoryStore[i].name) + "</td>"
+            + "<td>" + escapeHtml(usageHistoryStore[i].kind) + "</td>"
+            + "<td>" + escapeHtml(usageHistoryStore[i].relatedRecordName) + "</td>"
+            + "<td>" + escapeHtml(usageHistoryStore[i].dateOfUse) + "</td>"
+            + "</tr>";
+
+        $("#usageHistoryList").append(row);
+    }
+}
+
+function renderAdminHistory() {
+    $("#adminHistoryList").empty();
+
+    if (structureSaved == false) {
+        $("#historyLockNote").text("Save the structure first before reviewing current admin actions.");
+    } else {
+        $("#historyLockNote").text("The records below show administrator actions performed for the current saved structure.");
+    }
+
+    var grouped = {};
+
+    for (var i = 0; i < adminHistoryRecords.length; i++) {
+        var name = adminHistoryRecords[i].name;
+
+        if (grouped[name] == undefined) {
+            grouped[name] = [];
+        }
+
+        grouped[name].push(adminHistoryRecords[i]);
+    }
+
+    var hasGroup = false;
+
+    for (var key in grouped) {
+        hasGroup = true;
+
+        var block = "<div class='history-group'>";
+        block += "<div class='history-group-title'>" + escapeHtml(key) + "</div>";
+        block += "<table class='table'><thead><tr><th style='width:25%;'>Kind</th><th style='width:20%;'>Action</th><th style='width:25%;'>Date</th><th style='width:30%;'>Administrator</th></tr></thead><tbody>";
+
+        for (var j = 0; j < grouped[key].length; j++) {
+            block += "<tr>"
+                + "<td>" + escapeHtml(grouped[key][j].kind) + "</td>"
+                + "<td>" + escapeHtml(grouped[key][j].action) + "</td>"
+                + "<td>" + escapeHtml(grouped[key][j].date) + "</td>"
+                + "<td>" + escapeHtml(grouped[key][j].administrator) + "</td>"
+                + "</tr>";
+        }
+
+        block += "</tbody></table></div>";
+
+        $("#adminHistoryList").append(block);
+    }
+
+    if (hasGroup == false) {
+        $("#adminHistoryList").append("<div class='empty-note'>No admin action record is available yet.</div>");
+    }
+}
+
+function escapeHtml(text) {
+    if (text == null) {
+        return "";
+    }
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function editType(id) {
+    editingTypeId = id;
+    render();
+}
+
+function cancelTypeEdit() {
+    editingTypeId = -1;
+    render();
+}
+
+function saveTypeEdit(id) {
+    var newName = $("#editTypeInput_" + id).val().trim();
+
+    if (newName == "" || isDuplicateName(newName, "Type", id)) {
+        showMessage("Category name is invalid!", false);
+        return;
+    }
+
+    var target = null;
+
+    for (var i = 0; i < types.length; i++) {
+        if (types[i].id == id) {
+            target = types[i];
+            break;
+        }
+    }
+
+    if (target == null) {
+        showMessage("Type not found!", false);
+        return;
+    }
+
+    $.ajax({
+        url: "/resourceType/" + id,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({
+            resourceTypeId: id,
+            typeName: newName,
+            status: target.status,
+            usageCount: target.usageCount
+        }),
+        success: function(data) {
+            if (data == null) {
+                showMessage("Category name is invalid!", false);
+                return;
+            }
+
+            editingTypeId = -1;
+            addAdminHistoryRecord(newName, "Type", "Updated");
+            markStructureAsUnsaved();
+            updateItemMeta("Type", id, newName, target.status, target.usageCount, false);
+            loadAllData();
+            showMessage("Updated successfully!", true);
+        },
+        error: function() {
+            showMessage("Failed to update type!", false);
+        }
+    });
+}
+
+function editTopic(id) {
+    editingTopicId = id;
+    render();
+}
+
+function cancelTopicEdit() {
+    editingTopicId = -1;
+    render();
+}
+
+function saveTopicEdit(id) {
+    var newName = $("#editTopicInput_" + id).val().trim();
+
+    if (newName == "" || isDuplicateName(newName, "Topic", id)) {
+        showMessage("Category name is invalid!", false);
+        return;
+    }
+
+    var target = null;
+
+    for (var i = 0; i < topics.length; i++) {
+        if (topics[i].id == id) {
+            target = topics[i];
+            break;
+        }
+    }
+
+    if (target == null) {
+        showMessage("Topic not found!", false);
+        return;
+    }
+
+    $.ajax({
+        url: "/categoryTopic/" + id,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({
+            categoryId: id,
+            categoryTopic: newName,
+            status: target.status,
+            usageCount: target.usageCount
+        }),
+        success: function(data) {
+            if (data == null) {
+                showMessage("Category name is invalid!", false);
+                return;
+            }
+
+            editingTopicId = -1;
+            addAdminHistoryRecord(newName, "Topic", "Updated");
+            markStructureAsUnsaved();
+            updateItemMeta("Topic", id, newName, target.status, target.usageCount, false);
+            loadAllData();
+            showMessage("Updated successfully!", true);
+        },
+        error: function() {
+            showMessage("Failed to update topic!", false);
+        }
+    });
+}
+
+function toggleType(id, currentStatus) {
+    var actionUrl = "";
+
+    if (currentStatus == "ACTIVE") {
+        actionUrl = "/resourceType/" + id + "/deactivate";
+    } else {
+        actionUrl = "/resourceType/" + id + "/activate";
+    }
+
+    var target = null;
+
+    for (var i = 0; i < types.length; i++) {
+        if (types[i].id == id) {
+            target = types[i];
+            break;
+        }
+    }
+
+    $.ajax({
+        url: actionUrl,
+        type: "PUT",
+        success: function(data) {
+            if (data == null || target == null) {
+                showMessage("Failed to update type status!", false);
+                return;
+            }
+
+            if (currentStatus == "ACTIVE") {
+                addAdminHistoryRecord(target.name, "Type", "Deactivated");
+                markStructureAsUnsaved();
+                updateItemMeta("Type", id, target.name, "INACTIVE", target.usageCount, false);
+                showMessage("Type deactivated successfully!", true);
+            } else {
+                addAdminHistoryRecord(target.name, "Type", "Activated");
+                markStructureAsUnsaved();
+                updateItemMeta("Type", id, target.name, "ACTIVE", target.usageCount, false);
+                showMessage("Type activated successfully!", true);
+            }
+
+            loadAllData();
+        },
+        error: function() {
+            showMessage("Failed to update type status!", false);
+        }
+    });
+}
+
+function toggleTopic(id, currentStatus) {
+    var actionUrl = "";
+
+    if (currentStatus == "ACTIVE") {
+        actionUrl = "/categoryTopic/" + id + "/deactivate";
+    } else {
+        actionUrl = "/categoryTopic/" + id + "/activate";
+    }
+
+    var target = null;
+
+    for (var i = 0; i < topics.length; i++) {
+        if (topics[i].id == id) {
+            target = topics[i];
+            break;
+        }
+    }
+
+    $.ajax({
+        url: actionUrl,
+        type: "PUT",
+        success: function(data) {
+            if (data == null || target == null) {
+                showMessage("Failed to update topic status!", false);
+                return;
+            }
+
+            if (currentStatus == "ACTIVE") {
+                addAdminHistoryRecord(target.name, "Topic", "Deactivated");
+                markStructureAsUnsaved();
+                updateItemMeta("Topic", id, target.name, "INACTIVE", target.usageCount, false);
+                showMessage("Topic deactivated successfully!", true);
+            } else {
+                addAdminHistoryRecord(target.name, "Topic", "Activated");
+                markStructureAsUnsaved();
+                updateItemMeta("Topic", id, target.name, "ACTIVE", target.usageCount, false);
+                showMessage("Topic activated successfully!", true);
+            }
+
+            loadAllData();
+        },
+        error: function() {
+            showMessage("Failed to update topic status!", false);
+        }
+    });
+}
+
+function saveStructure() {
+    if (types.length == 0 || topics.length == 0) {
+        showMessage("Structure is incomplete!", false);
+        structureSaved = false;
+        saveLocalState();
+        render();
+        return;
+    }
+
+    savedStructureSnapshot = {
+        types: [],
+        topics: [],
+        savedAt: getCurrentDateTime()
+    };
+
+    for (var i = 0; i < types.length; i++) {
+        savedStructureSnapshot.types.push(types[i].name);
+    }
+
+    for (var j = 0; j < topics.length; j++) {
+        savedStructureSnapshot.topics.push(topics[j].name);
+    }
+
+    structureSaved = true;
+    addAdminHistoryRecord("Structure", "Classification", "Saved");
+    saveLocalState();
+    render();
+    showMessage("Structure saved successfully!", true);
+}
+
+$("#addType").click(function() {
+    var name = $("#typeInput").val().trim();
+
+    if (name == "" || isDuplicateName(name, "Type", null)) {
+        showMessage("Category name is invalid!", false);
+        return;
+    }
+
+    $.ajax({
+        url: "/resourceType",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            typeName: name,
+            status: "ACTIVE",
+            usageCount: 0
+        }),
+        success: function(data) {
+            if (data == null) {
+                showMessage("Category name is invalid!", false);
+                return;
+            }
+
+            $("#typeInput").val("");
+            addAdminHistoryRecord(name, "Type", "Created");
+            markStructureAsUnsaved();
+            if (data.resourceTypeId != null) {
+                updateItemMeta("Type", data.resourceTypeId, name, "ACTIVE", 0, true);
+            }
+            loadAllData();
+            showMessage("Added successfully!", true);
+        },
+        error: function() {
+            showMessage("Failed to add type!", false);
+        }
+    });
+});
+
+$("#addTopic").click(function() {
+    var name = $("#topicInput").val().trim();
+
+    if (name == "" || isDuplicateName(name, "Topic", null)) {
+        showMessage("Category name is invalid!", false);
+        return;
+    }
+
+    $.ajax({
+        url: "/categoryTopic",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            categoryTopic: name,
+            status: "ACTIVE",
+            usageCount: 0
+        }),
+        success: function(data) {
+            if (data == null) {
+                showMessage("Category name is invalid!", false);
+                return;
+            }
+
+            $("#topicInput").val("");
+            addAdminHistoryRecord(name, "Topic", "Created");
+            markStructureAsUnsaved();
+            if (data.categoryId != null) {
+                updateItemMeta("Topic", data.categoryId, name, "ACTIVE", 0, true);
+            }
+            loadAllData();
+            showMessage("Added successfully!", true);
+        },
+        error: function() {
+            showMessage("Failed to add topic!", false);
+        }
+    });
+});
+
+$("#saveStructureBtn").click(function() {
+    saveStructure();
+});
+
+$("#refreshStructureBtn").click(function() {
+    loadAllData();
+    showMessage("Data refreshed successfully!", true);
+});
+
+$(".tab-btn").click(function() {
+    $(".tab-btn").removeClass("active");
+    $(this).addClass("active");
+
+    var tab = $(this).data("tab");
+
+    $(".section").removeClass("active");
+    $("#" + tab).addClass("active");
+});
+
+$("#detailsModal").click(function(e) {
+    if (e.target.id == "detailsModal") {
+        closeDetailsModal();
+    }
+});
+
+$(document).ready(function() {
+    loadLocalState();
+    loadAllData();
+});
+
+</script>
+
+</body>
+</html>

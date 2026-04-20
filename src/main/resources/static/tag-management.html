@@ -1,0 +1,919 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tag Management</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            background-color: #eef3f8;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: #4f5d6b;
+        }
+
+        .container-box {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding-bottom: 60px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #4f6478;
+            font-weight: 600;
+        }
+
+        .tab-bar {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 6px;
+        }
+
+        .tab-btn {
+            background: #d8e3ee;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 20px;
+            color: #4f6478;
+            white-space: nowrap;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .tab-btn.active {
+            background: #7f9bb3;
+            color: white;
+        }
+
+        .tab-btn:focus,
+        .tab-btn:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .card-box {
+            background: #f8fbfe;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(110, 130, 150, 0.12);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .btn-main {
+            background: #7f9bb3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-main:hover {
+            background: #6e8aa3;
+            color: white;
+        }
+
+        .btn-main:focus,
+        .btn-main:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-soft {
+            background: #dbe6f0;
+            border: none;
+            border-radius: 8px;
+            color: #4f6478;
+            padding: 6px 12px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-soft:hover {
+            background: #c9d8e6;
+        }
+
+        .btn-soft:focus,
+        .btn-soft:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-cancel {
+            background: #f1f4f7;
+            border: 1px solid #c9d8e6;
+            border-radius: 8px;
+            color: #4f6478;
+            padding: 6px 12px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .btn-cancel:hover {
+            background: #e5edf4;
+        }
+
+        .btn-cancel:focus,
+        .btn-cancel:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #c9d8e6;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            box-shadow: none !important;
+            border-color: #9cb4c9;
+            outline: none !important;
+        }
+
+        .edit-input {
+            width: 200px;
+            display: inline-block;
+            margin-right: 8px;
+            border-radius: 8px;
+            border: 1px solid #9cb4c9;
+            padding: 4px 8px;
+            background-color: white;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .edit-input:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: #9cb4c9;
+        }
+
+        h4 {
+            color: #587089;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        h5 {
+            color: #5f7387;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .table td, .table th {
+            color: #4f5d6b;
+            vertical-align: middle;
+        }
+
+        .status-active {
+            color: #3f7d5f;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: #e25555;
+            font-weight: 600;
+        }
+
+        .info-note {
+            font-size: 14px;
+            color: #70808f;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .message-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 300px;
+            max-width: 480px;
+            text-align: center;
+            padding: 16px 22px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            font-weight: 500;
+            background-color: white;
+        }
+
+        .message-success {
+            color: #4f6478;
+            border: 1px solid #d8e3ee;
+        }
+
+        .message-error {
+            color: #c43d3d;
+            border: 1px solid #f0c8c8;
+        }
+
+        .empty-note {
+            color: #8a97a5;
+            font-style: italic;
+        }
+
+        .group-box {
+            background: #f4f8fc;
+            border: 1px solid #dbe6f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .group-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4f6478;
+            margin-bottom: 10px;
+        }
+
+        .group-input {
+            width: 220px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .details-modal {
+            display: none;
+            position: fixed;
+            z-index: 9998;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(43, 58, 72, 0.35);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .details-modal-content {
+            width: 100%;
+            max-width: 560px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18);
+        }
+
+        .details-row {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="messageOverlay" class="message-overlay"></div>
+
+<div id="detailsModal" class="details-modal">
+    <div class="details-modal-content">
+        <h4 id="detailsTitle">Tag Details</h4>
+        <div id="detailsBody"></div>
+        <div class="mt-3 text-right">
+            <button class="btn btn-cancel" onclick="closeDetailsModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="container-box">
+
+    <div class="title">Tag Management</div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="manage">Manage</button>
+        <button class="tab-btn" data-tab="usage">Usage</button>
+        <button class="tab-btn" data-tab="history">Admin History</button>
+    </div>
+
+    <div class="card-box">
+
+        <div id="manage" class="section active">
+
+            <h4>Tag Repository</h4>
+            <div class="info-note">
+                All tags shown here are collected from user-submitted resources. They are automatically stored and can be reviewed and maintained by administrators.
+            </div>
+
+            <button id="toggleArrangementBtn" class="btn btn-main mb-3">Manual Arrangement</button>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tag Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tagList"></tbody>
+            </table>
+
+            <div id="arrangementArea" style="display:none;">
+                <h5>Review Groups</h5>
+                <div class="info-note">
+                    Similar tags can be placed into the same review group for easier review.
+                </div>
+                <div id="groupList"></div>
+            </div>
+
+        </div>
+
+        <div id="usage" class="section">
+            <h4>Usage Overview</h4>
+            <div class="info-note">
+                Current usage count is loaded from the backend.
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tag Name</th>
+                        <th>Usage Count</th>
+                    </tr>
+                </thead>
+                <tbody id="usageList"></tbody>
+            </table>
+
+            <h5>Resource Usage Records</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tag Name</th>
+                        <th>Related Record Name</th>
+                        <th>Date of Use</th>
+                    </tr>
+                </thead>
+                <tbody id="usageHistoryList"></tbody>
+            </table>
+        </div>
+
+        <div id="history" class="section">
+            <h4>Admin Action History</h4>
+            <div class="info-note">
+                Current records show administrator actions performed in this session.
+            </div>
+            <div id="historyList"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+var tags = [];
+var editingTagId = -1;
+var tagUsageHistoryStore = [];
+var tagGroups = JSON.parse(localStorage.getItem("tagGroups") || "{}");
+var arrangementMode = false;
+var adminHistoryRecords = JSON.parse(localStorage.getItem("tagAdminHistoryRecords") || "[]");
+var currentAdministrator = "Admin A";
+
+function escapeHtml(text) {
+    if (text == null || text == undefined) {
+        return "";
+    }
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function getCurrentDateTime() {
+    var now = new Date();
+
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var day = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+
+    if (month < 10) {
+        month = "0" + month;
+    }
+
+    if (day < 10) {
+        day = "0" + day;
+    }
+
+    if (hour < 10) {
+        hour = "0" + hour;
+    }
+
+    if (minute < 10) {
+        minute = "0" + minute;
+    }
+
+    return year + "-" + month + "-" + day + " " + hour + ":" + minute;
+}
+
+function showMessage(message, isSuccess) {
+    if (isSuccess == true) {
+        $("#messageOverlay").removeClass("message-error");
+        $("#messageOverlay").addClass("message-success");
+    } else {
+        $("#messageOverlay").removeClass("message-success");
+        $("#messageOverlay").addClass("message-error");
+    }
+
+    $("#messageOverlay").text(message);
+    $("#messageOverlay").stop(true, true).fadeIn();
+
+    setTimeout(function() {
+        $("#messageOverlay").fadeOut();
+    }, 2200);
+}
+
+function persistTagPageState() {
+    localStorage.setItem("tagGroups", JSON.stringify(tagGroups));
+    localStorage.setItem("tagAdminHistoryRecords", JSON.stringify(adminHistoryRecords));
+}
+
+function addAdminHistoryRecord(name, action) {
+    adminHistoryRecords.push({
+        name: name,
+        action: action,
+        date: getCurrentDateTime(),
+        administrator: currentAdministrator
+    });
+
+    persistTagPageState();
+}
+
+function isDuplicateTagName(name, currentId) {
+    var normalized = name.toLowerCase();
+
+    for (var i = 0; i < tags.length; i++) {
+        if (currentId != null && tags[i].id == currentId) {
+            continue;
+        }
+
+        if (tags[i].name != null && tags[i].name.toLowerCase() == normalized) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function sortTagsAlphabetically() {
+    tags.sort(function(a, b) {
+        var nameA = a.name.toLowerCase();
+        var nameB = b.name.toLowerCase();
+
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+function loadTagsFromBackend() {
+    $.ajax({
+        url: "/tags",
+        type: "GET",
+        success: function(data) {
+            tags = [];
+
+            for (var i = 0; i < data.length; i++) {
+                tags.push({
+                    id: data[i].tagId,
+                    name: data[i].tagName,
+                    status: data[i].status,
+                    usageCount: data[i].usageCount == null ? 0 : data[i].usageCount,
+                    createdAt: data[i].createdAt,
+                    lastUpdatedAt: data[i].lastUpdatedAt
+                });
+            }
+
+            render();
+            loadTagUsageHistoryFromBackend();
+        },
+        error: function() {
+            showMessage("Failed to load tags from backend!", false);
+            render();
+        }
+    });
+}
+
+function loadTagUsageHistoryFromBackend() {
+    $.ajax({
+        url: "/tagUsageHistory",
+        type: "GET",
+        success: function(data) {
+            tagUsageHistoryStore = data || [];
+            renderUsageHistory();
+        },
+        error: function() {
+            tagUsageHistoryStore = [];
+            renderUsageHistory();
+            showMessage("Failed to load tag usage records from backend!", false);
+        }
+    });
+}
+
+function render() {
+    sortTagsAlphabetically();
+    renderTagList();
+    renderUsage();
+    renderUsageHistory();
+    renderHistory();
+    renderGroups();
+}
+
+function renderTagList() {
+    $("#tagList").empty();
+
+    if (tags.length == 0) {
+        $("#tagList").append("<tr><td colspan='3' class='empty-note'>No tag is available yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < tags.length; i++) {
+        var statusText = "";
+        var buttonText = "";
+        var nameCell = "";
+
+        if (tags[i].status == "ACTIVE") {
+            statusText = "<span class='status-active'>Active</span>";
+            buttonText = "Deactivate";
+        } else {
+            statusText = "<span class='status-inactive'>Inactive</span>";
+            buttonText = "Activate";
+        }
+
+        if (editingTagId == tags[i].id) {
+            nameCell = "<input id='editTagInput_" + tags[i].id + "' class='edit-input' value='" + escapeHtml(tags[i].name) + "'>"
+                + "<button class='btn-soft' onclick='saveTagEdit(" + tags[i].id + ")'>Save</button>"
+                + "<button class='btn-cancel' onclick='cancelTagEdit()'>Cancel</button>";
+        } else {
+            nameCell = escapeHtml(tags[i].name);
+        }
+
+        var row = "<tr>"
+            + "<td>" + nameCell + "</td>"
+            + "<td>" + statusText + "</td>"
+            + "<td>";
+
+        if (editingTagId != tags[i].id) {
+            row += "<button class='btn-soft' onclick='openDetailsModal(" + tags[i].id + ")'>View Details</button>"
+                + "<button class='btn-soft' onclick='editTag(" + tags[i].id + ")'>Edit</button>"
+                + "<button class='btn-soft' onclick='toggleTag(" + tags[i].id + ", \"" + tags[i].status + "\")'>" + buttonText + "</button>";
+        }
+
+        row += "</td></tr>";
+
+        $("#tagList").append(row);
+    }
+}
+
+function renderUsage() {
+    $("#usageList").empty();
+
+    if (tags.length == 0) {
+        $("#usageList").append("<tr><td colspan='2' class='empty-note'>No tag overview is available yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < tags.length; i++) {
+        var row = "<tr>"
+            + "<td>" + escapeHtml(tags[i].name) + "</td>"
+            + "<td>" + (tags[i].usageCount == null ? 0 : tags[i].usageCount) + "</td>"
+            + "</tr>";
+
+        $("#usageList").append(row);
+    }
+}
+
+function renderUsageHistory() {
+    $("#usageHistoryList").empty();
+
+    if (tagUsageHistoryStore.length == 0) {
+        $("#usageHistoryList").append("<tr><td colspan='3' class='empty-note'>No resource usage record is available yet.</td></tr>");
+        return;
+    }
+
+    for (var i = 0; i < tagUsageHistoryStore.length; i++) {
+        var row = "<tr>"
+            + "<td>" + escapeHtml(tagUsageHistoryStore[i].tagName) + "</td>"
+            + "<td>" + escapeHtml(tagUsageHistoryStore[i].relatedRecordName) + "</td>"
+            + "<td>" + escapeHtml(tagUsageHistoryStore[i].dateOfUse) + "</td>"
+            + "</tr>";
+
+        $("#usageHistoryList").append(row);
+    }
+}
+
+function renderHistory() {
+    $("#historyList").empty();
+
+    var grouped = {};
+
+    for (var i = 0; i < adminHistoryRecords.length; i++) {
+        var name = adminHistoryRecords[i].name;
+
+        if (grouped[name] == undefined) {
+            grouped[name] = [];
+        }
+
+        grouped[name].push(adminHistoryRecords[i]);
+    }
+
+    var hasGroup = false;
+
+    for (var key in grouped) {
+        hasGroup = true;
+
+        var block = "<div class='group-box'>";
+        block += "<div class='group-title'>" + escapeHtml(key) + "</div>";
+        block += "<table class='table'><thead><tr><th style='width:30%;'>Action</th><th style='width:40%;'>Date</th><th style='width:30%;'>Administrator</th></tr></thead><tbody>";
+
+        for (var j = 0; j < grouped[key].length; j++) {
+            block += "<tr>"
+                + "<td>" + escapeHtml(grouped[key][j].action) + "</td>"
+                + "<td>" + escapeHtml(grouped[key][j].date) + "</td>"
+                + "<td>" + escapeHtml(grouped[key][j].administrator) + "</td>"
+                + "</tr>";
+        }
+
+        block += "</tbody></table></div>";
+
+        $("#historyList").append(block);
+    }
+
+    if (hasGroup == false) {
+        $("#historyList").append("<div class='empty-note'>No admin action record is available yet.</div>");
+    }
+}
+
+function renderGroups() {
+    $("#groupList").empty();
+
+    if (arrangementMode == false) {
+        $("#arrangementArea").hide();
+        return;
+    }
+
+    $("#arrangementArea").show();
+
+    if (tags.length == 0) {
+        $("#groupList").append("<div class='empty-note'>No tag is available for manual arrangement yet.</div>");
+        return;
+    }
+
+    for (var i = 0; i < tags.length; i++) {
+        var currentGroup = "";
+
+        if (tagGroups[tags[i].name] != undefined) {
+            currentGroup = tagGroups[tags[i].name];
+        }
+
+        var row = "<div class='group-box'>"
+            + "<div class='group-title'>" + escapeHtml(tags[i].name) + "</div>"
+            + "<input id='groupInput_" + tags[i].id + "' class='form-control group-input' value='" + escapeHtml(currentGroup) + "' placeholder='Enter a review group name'>"
+            + "<button class='btn-soft' onclick='saveGroup(" + tags[i].id + ")'>Save Group</button>"
+            + "</div>";
+
+        $("#groupList").append(row);
+    }
+}
+
+function closeDetailsModal() {
+    $("#detailsModal").fadeOut(150);
+}
+
+function openDetailsModal(id) {
+    var item = null;
+
+    for (var i = 0; i < tags.length; i++) {
+        if (tags[i].id == id) {
+            item = tags[i];
+            break;
+        }
+    }
+
+    if (item == null) {
+        showMessage("Tag details cannot be loaded!", false);
+        return;
+    }
+
+    var reuseText = item.status == "ACTIVE"
+        ? "This tag can be used for new classification."
+        : "This tag is preserved in previous records but cannot be reused for new classification.";
+
+    var relatedHistory = [];
+    for (var j = 0; j < adminHistoryRecords.length; j++) {
+        if (adminHistoryRecords[j].name == item.name) {
+            relatedHistory.push(adminHistoryRecords[j]);
+        }
+    }
+
+    var historyText = "No usage information is available yet.";
+    if (relatedHistory.length > 0) {
+        historyText = "";
+        for (var k = 0; k < relatedHistory.length; k++) {
+            historyText += "<div class='details-row'>• " + escapeHtml(relatedHistory[k].action) + " — " + escapeHtml(relatedHistory[k].date) + "</div>";
+        }
+    }
+
+    var reviewGroup = tagGroups[item.name] == undefined || tagGroups[item.name] === ""
+        ? "-"
+        : tagGroups[item.name];
+
+    var detailsHtml = ""
+        + "<div class='details-row'><strong>Name:</strong> " + escapeHtml(item.name) + "</div>"
+        + "<div class='details-row'><strong>Classification Kind:</strong> Tag</div>"
+        + "<div class='details-row'><strong>Status:</strong> " + (item.status == "ACTIVE" ? "Active" : "Inactive") + "</div>"
+        + "<div class='details-row'><strong>Usage Count:</strong> " + (item.usageCount == null ? 0 : item.usageCount) + "</div>"
+        + "<div class='details-row'><strong>Created Time:</strong> " + (item.createdAt || "-") + "</div>"
+        + "<div class='details-row'><strong>Last Updated Time:</strong> " + (item.lastUpdatedAt || "-") + "</div>"
+        + "<div class='details-row'><strong>Review Group:</strong> " + escapeHtml(reviewGroup) + "</div>"
+        + "<div class='details-row'><strong>Availability Note:</strong> " + reuseText + "</div>"
+        + "<div class='details-row' style='margin-top: 16px;'><strong>Recent Records:</strong></div>"
+        + "<div class='details-row'>" + historyText + "</div>";
+
+    $("#detailsTitle").text("Tag Details");
+    $("#detailsBody").html(detailsHtml);
+    $("#detailsModal").css("display", "flex").hide().fadeIn(150);
+}
+
+function editTag(id) {
+    editingTagId = id;
+    render();
+}
+
+function cancelTagEdit() {
+    editingTagId = -1;
+    render();
+}
+
+function saveTagEdit(id) {
+    var newName = $("#editTagInput_" + id).val().trim();
+    var target = null;
+
+    if (newName == "" || isDuplicateTagName(newName, id)) {
+        showMessage("Tag name is invalid!", false);
+        return;
+    }
+
+    for (var i = 0; i < tags.length; i++) {
+        if (tags[i].id == id) {
+            target = tags[i];
+            break;
+        }
+    }
+
+    if (target == null) {
+        showMessage("Tag not found!", false);
+        return;
+    }
+
+    $.ajax({
+        url: "/tag/" + id,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({
+            tagId: id,
+            tagName: newName,
+            status: target.status,
+            usageCount: target.usageCount
+        }),
+        success: function(data) {
+            if (data == null) {
+                showMessage("Tag name is invalid!", false);
+                return;
+            }
+
+            if (tagGroups[target.name] != undefined) {
+                tagGroups[newName] = tagGroups[target.name];
+                delete tagGroups[target.name];
+                persistTagPageState();
+            }
+
+            editingTagId = -1;
+            addAdminHistoryRecord(newName, "Updated");
+            loadTagsFromBackend();
+            showMessage("Updated successfully!", true);
+        },
+        error: function() {
+            showMessage("Failed to update tag!", false);
+        }
+    });
+}
+
+function toggleTag(id, currentStatus) {
+    var actionUrl = "";
+    var tagName = "";
+
+    for (var i = 0; i < tags.length; i++) {
+        if (tags[i].id == id) {
+            tagName = tags[i].name;
+            break;
+        }
+    }
+
+    if (currentStatus == "ACTIVE") {
+        actionUrl = "/tag/" + id + "/deactivate";
+    } else {
+        actionUrl = "/tag/" + id + "/activate";
+    }
+
+    $.ajax({
+        url: actionUrl,
+        type: "PUT",
+        success: function(data) {
+            if (data == null) {
+                showMessage("Failed to update tag status!", false);
+                return;
+            }
+
+            if (currentStatus == "ACTIVE") {
+                addAdminHistoryRecord(tagName, "Deactivated");
+                showMessage("Tag deactivated successfully!", true);
+            } else {
+                addAdminHistoryRecord(tagName, "Activated");
+                showMessage("Tag activated successfully!", true);
+            }
+
+            loadTagsFromBackend();
+        },
+        error: function() {
+            showMessage("Failed to update tag status!", false);
+        }
+    });
+}
+
+$("#toggleArrangementBtn").click(function() {
+    if (arrangementMode == true) {
+        arrangementMode = false;
+    } else {
+        arrangementMode = true;
+    }
+
+    render();
+});
+
+function saveGroup(id) {
+    for (var i = 0; i < tags.length; i++) {
+        if (tags[i].id == id) {
+            var value = $("#groupInput_" + id).val().trim();
+            tagGroups[tags[i].name] = value;
+            persistTagPageState();
+            showMessage("Review group saved successfully!", true);
+            break;
+        }
+    }
+}
+
+$(".tab-btn").click(function() {
+    $(".tab-btn").removeClass("active");
+    $(this).addClass("active");
+
+    var tab = $(this).data("tab");
+
+    $(".section").removeClass("active");
+    $("#" + tab).addClass("active");
+});
+
+$(document).on("click", "#detailsModal", function(event) {
+    if (event.target.id == "detailsModal") {
+        closeDetailsModal();
+    }
+});
+
+$(document).ready(function() {
+    loadTagsFromBackend();
+});
+
+</script>
+
+</body>
+</html>

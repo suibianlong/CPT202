@@ -1,0 +1,170 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+body {
+    background-color: #eef3f8;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #4f5d6b;
+}
+
+.top-bar {
+    background: #7f9bb3;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.system-title {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.menu {
+    position: relative;
+}
+
+.menu-btn {
+    background: white;
+    color: #7f9bb3;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+    box-shadow: none;
+}
+
+.menu-btn:hover {
+    background: #eef3f8;
+}
+
+.dropdown-menu-custom {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    overflow: hidden;
+    min-width: 160px;
+    z-index: 1000;
+}
+
+.dropdown-item-custom {
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #4f5d6b;
+}
+
+.dropdown-item-custom:hover {
+    background: #eef3f8;
+}
+
+.main-area {
+    width: 100%;
+    height: calc(100vh - 56px);
+    position: relative;
+}
+
+.welcome-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.welcome-card {
+    background: #f8fbfe;
+    padding: 40px 50px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(110, 130, 150, 0.12);
+    max-width: 650px;
+}
+
+.welcome-title {
+    font-size: 30px;
+    font-weight: 600;
+    color: #4f6478;
+    margin-bottom: 14px;
+}
+
+.welcome-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #6b7b8a;
+}
+
+.main-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+    <div class="system-title">Admin Dashboard</div>
+
+    <div class="menu">
+        <button class="menu-btn" onclick="toggleMenu()">Menu</button>
+
+        <div id="dropdown" class="dropdown-menu-custom">
+            <div class="dropdown-item-custom" onclick="loadPage('classification-management.html')">Classification</div>
+            <div class="dropdown-item-custom" onclick="loadPage('tag-management.html')">Tag</div>
+        </div>
+    </div>
+</div>
+
+<div class="main-area">
+
+    <div id="welcomeBox" class="welcome-box">
+        <div class="welcome-card">
+            <div class="welcome-title">Welcome, Administrator</div>
+            <div class="welcome-text">
+                Please select a management module from the menu in the top-right corner.<br>
+                You can manage classification structures or review and maintain tags used across the platform.
+            </div>
+        </div>
+    </div>
+
+    <iframe id="mainFrame" class="main-frame"></iframe>
+
+</div>
+
+<script>
+function toggleMenu() {
+    $("#dropdown").toggle();
+}
+
+function loadPage(page) {
+    $("#welcomeBox").hide();
+    $("#mainFrame").show();
+    $("#mainFrame").attr("src", page);
+    $("#dropdown").hide();
+}
+
+$(document).click(function(event) {
+    if (!$(event.target).closest(".menu").length) {
+        $("#dropdown").hide();
+    }
+});
+</script>
+
+</body>
+</html>
